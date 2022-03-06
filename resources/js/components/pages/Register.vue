@@ -61,7 +61,7 @@ export default {
     },
     methods: {
         register() {
-            this.form.post('/register');
+            this.form.post(route('register.post'));
         }
     }
 };

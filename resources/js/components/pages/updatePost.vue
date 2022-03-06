@@ -64,7 +64,15 @@ export default {
     },
     methods: {
         post() {
-            this.form.put('/post/');
+            this.form.put(route('post.thing', this.post.id), {
+                onSuccess: () => {
+                    this.$swal({
+                        title: 'Your post has been updated!',
+                        text: '',
+                        icon: 'success'
+                    });
+                }
+            });
         }
     }
 };

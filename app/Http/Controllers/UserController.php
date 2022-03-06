@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use http\Env\Response;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\{UserEditRequest, UserStoreRequest, UserLoginRequest};
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,16 +9,12 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function loginPage(){
-        return inertia('Login');
-    }
-
     public function login(UserLoginRequest $request)
     {
         $credentials = $request->validated();
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->to(route('home'));
+            return redirect()->route('home');
         }
         else{
             return redirect()->back()->withErrors([
@@ -53,6 +47,7 @@ class UserController extends Controller
 
     public function updateProfilePage(User $user)
     {
+        abort_unless($user->id == auth()->id(), 403);
         return inertia('update-profile', compact(['user']));
     }
 
@@ -62,12 +57,14 @@ class UserController extends Controller
         $validated  = $request->validated();
         $user->update($validated);
         $user->save();
-        return response()->json(200);
+        return back();
     }
 
-    public function registerPage()
+    public function destroy(User $user)
     {
-        return inertia('Register');
+        abort_unless($user->id === auth()->id(), 403);
+        $user->delete();
+        return back();
     }
 
     public function logOutMethod(Request $request)
@@ -75,6 +72,6 @@ class UserController extends Controller
         auth()->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->to('home');
+        return back();
     }
 }

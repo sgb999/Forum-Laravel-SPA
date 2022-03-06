@@ -9,19 +9,33 @@ use App\Models\{
 
 class PostController extends Controller
 {
+
+    public function index()
+    {
+        return inertia('home', [ 'url' => '/view-all-topics/' ]);
+    }
+
+    public function viewAllTopics()
+    {
+        return response()->json(
+            Post::with('user:id,username', 'category:id,name')
+                ->select('id', 'title', 'user_id', 'category_id', 'created_at')
+                ->orderByDesc('created_at')
+                ->paginate(20)
+        );
+    }
+
     public function viewTopics($id)
     {
-        $url = '/view-topics-ajax/' . $id;
-        return inertia('LoadTitles', compact(['url']));
+        return inertia('LoadTitles', [ 'url' => '/view-topics-ajax/' . $id ]);
     }
 
     public function viewPost($id)
     {
-        $post = Post::findOrFail($id)
+        return inertia('ViewPost', ['post' => Post::whereId($id)
             ->with('user:id,username')
             ->select('id', 'title', 'content', 'user_id', 'created_at', 'category_id')
-            ->first();
-        return inertia('ViewPost', compact(['post']));
+            ->first()]);
     }
 
     public function viewTopicsAjax($id)
@@ -37,8 +51,7 @@ class PostController extends Controller
 
     public function postPage()
     {
-        $categories = Category::all();
-        return inertia('MakePost', compact(['categories']));
+        return inertia('MakePost', [ 'categories' => Category::all()]);
     }
 
     public function updatePostPage(Post $post)
@@ -55,13 +68,17 @@ class PostController extends Controller
         $validated += ['user_id' => auth()->id()];
         $post      = Post::create($validated);
 
-        return redirect()->route('viewPost' , $post->id);
+        return redirect()->route('post.show' , $post->id);
     }
 
-    public function edit(PostStoreRequest $request)
+    public function edit(Post $post, PostStoreRequest $request)
     {
-        $post = Post::updateOrCreate($request->validated(['user_id' => auth()->id()]));
-        return redirect()->route('viewPost' , $post->id);
+        abort_unless($post->user_id == auth()->id(), 403);
+        $validated = $request->validated();
+        $post->update($validated);
+        $post->save();
+
+        return $this->viewPost($post->id);
     }
 
     public function getProfilePosts($id)
@@ -77,12 +94,9 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        if($post->user_id !== auth()->id())
-        {
-            return redirect()->back();
-        }
+        abort_unless($post->user_id == auth()->id(), 403);
         $id = $post->category_id;
         $post->delete();
-        return redirect()->to(route('viewTopics' , $id));
+        return $this->viewTopics($id);
     }
 }

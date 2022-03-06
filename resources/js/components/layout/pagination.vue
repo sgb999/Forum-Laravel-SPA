@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav v-if="links > 3">
         <ul class="pagination">
             <li class="page-item" v-for="link in links"><button v-if="link.url" @click="$emit('nextPage', link.url)" :class="{'page-link' :  link.url, 'font-bold' : link.active}">{{ link.label}}</button></li>
         </ul>

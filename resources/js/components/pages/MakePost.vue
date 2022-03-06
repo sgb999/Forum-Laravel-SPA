@@ -62,7 +62,15 @@ export default {
     },
     methods: {
         post() {
-            this.form.post('/update-post/' + this.post.id);
+            this.form.post(route('post.store'), {
+                onSuccess: () => {
+                    this.$swal({
+                        title: 'Your post has been posted!',
+                        text: '',
+                        icon: 'success'
+                    });
+                }
+            });
         }
     }
 };
