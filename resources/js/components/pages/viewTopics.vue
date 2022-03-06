@@ -4,13 +4,13 @@
         <page-loader  v-if="!topics"/>
         <div v-if="topics"
            v-for="topic in topics">
-            <inertia-link :href="'/view-post/' + topic.id">
+            <inertia-link :href="route('post.show', topic.id)">
             <h3>{{topic.title}}</h3>
             </inertia-link>
-            <inertia-link :href="'/profile/' + topic.user.username">
+            <inertia-link :href="route('profile', topic.user.username)">
                 <p>{{topic.user.username}}</p>
             </inertia-link>
-            <inertia-link :href="'/view-topics/' + topic.category.id">
+            <inertia-link :href="route('topics.show', topic.category.id)">
                 <p>{{ topic.category.name }}</p>
             </inertia-link>
             <p>{{ topic.created_at }}</p>

@@ -1,12 +1,12 @@
 <template>
     <h1 id="header">Assassin's creed forum</h1>
     <ul class="topnav">
-        <li><inertia-link href="/">Home</inertia-link></li>
-        <li><inertia-link href="/categories">View Categories</inertia-link></li>
-        <li v-if="user" class="right"><inertia-link href="/log-out"><span class="glyphicon glyphicon-log-out red"></span> Sign out</inertia-link></li>
+        <li><inertia-link :href="route('home')">Home</inertia-link></li>
+        <li><inertia-link :href="route('categories.index')">View Categories</inertia-link></li>
+        <li v-if="user" class="right"><inertia-link :href="route('log-out')"><span class="glyphicon glyphicon-log-out red"></span> Sign out</inertia-link></li>
         <li v-if="user" class="right"><inertia-link href="#"><span class="glyphicon glyphicon-envelope yellow"></span>Messages</inertia-link></li>
-        <li v-if="!user" class="right"><inertia-link href="/register"><span class="glyphicon glyphicon-user green"></span>Sign Up</inertia-link></li>
-        <li v-if="!user" class="right"><inertia-link href="/login"><span class="glyphicon glyphicon-log-in green"></span>Login</inertia-link></li>
+        <li v-if="!user" class="right"><inertia-link :href="route('register.index')"><span class="glyphicon glyphicon-user green"></span>Sign Up</inertia-link></li>
+        <li v-if="!user" class="right"><inertia-link :href="route('login.index')"><span class="glyphicon glyphicon-log-in green"></span>Login</inertia-link></li>
     </ul>
 </template>
 

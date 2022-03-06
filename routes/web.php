@@ -20,40 +20,46 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::inertia('/', 'home')->name('home');
-Route::get('/categories', [CategoryController::class, 'index']);
+Route::inertia('/', 'LoadTitles', ['url' => '/view-all-topics/'])->name('home');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::controller(PostController::class)->group(function (){
-    Route::get('/view-topics/{id}', 'viewTopics')->name('viewTopics');
+    Route::get('/view-all-topics/', 'viewAllTopics');
+    Route::get('/view-topics/{id}', 'viewTopics')->name('topics.show');
     Route::get('/view-topics-ajax/{id}', 'viewTopicsAjax');
     Route::get('/view-profile-posts/{id}', 'getProfilePosts');
-    Route::get('/view-post/{id}', 'viewPost')->name('viewPost');
+    Route::get('/view-post/{id}', 'viewPost')->name('post.show');
 });
-Route::get('/comment/view/{id}', [CommentController::class, 'getComments']);
-Route::get('/profile/{user:username}', [UserController::class, 'profile']);
+Route::get('/comment/view/{id}', [CommentController::class, 'index'])->name('comment.index');
+Route::get('/profile/{user:username}', [UserController::class, 'profile'])->name('profile');
 
 Route::middleware(['auth'])->group(function(){
-    Route::controller(CommentController::class)->group(function (){
-        Route::post('/comment/','store');
-        Route::put('/comment/{comment}','edit');
-        Route::delete('/comment/{comment}', 'destroy');
+    Route::controller(CommentController::class)
+        ->prefix('/comment')->group(function (){
+        Route::post('/','store')->name('comment.store');
+        Route::put('/{comment}','edit')->name('comment.edit');
+        Route::delete('/{comment}', 'destroy')->name('comment.destroy');
     });
-    Route::get('/profile/update/{user:username}', [UserController::class, 'updateProfilePage']);
-    Route::put('/profile/update/{user}', [UserController::class, 'updateProfile']);
-    Route::get('/log-out', [UserController::class, 'logOutMethod']);
+    Route::controller(UserController::class)
+        ->group(function (){
+            Route::get('/log-out', 'logOutMethod')->name('log-out');
+            Route::get('/profile/update/{user:username}', 'updateProfilePage')->name('user.index');
+            Route::put('/profile/update/{user}', 'updateProfile')->name('user.edit');
+            Route::delete('/profile/update{user}', 'destroy')->name('user.destroy');
+        });
 
     //Post routing
     Route::prefix('/post')->controller(PostController::class)->group(function () {
         Route::get('/', 'postPage');
-        Route::post('/', 'store');
-        Route::get('/update/{post}', 'updatePostPage');
-        Route::post('/update-post/{id}', 'edit')->name('updatePost');
-        Route::delete('/{post}', 'destroy');
+        Route::post('/', 'store')->name('post.store');
+        Route::get('/update/{post}', 'updatePostPage')->name('post.edit');
+        Route::put('/{post}', 'edit')->name('post.thing');
+        Route::delete('/{post}', 'destroy')->name('post.destroy');
     });
 });
 
 Route::middleware(['guest'])->controller(UserController::class)->group(function(){
-    Route::inertia('/login', 'Login')->name('login');
-    Route::post('/login', 'login');
-    Route::post('/register', 'register');
-    Route::inertia('/register', 'Register');
+    Route::inertia('/login', 'Login')->name('login.index');
+    Route::post('/login', 'login')->name('login.post');
+    Route::post('/register', 'register')->name('register.post');
+    Route::inertia('/register', 'Register')->name('register.index');
 });

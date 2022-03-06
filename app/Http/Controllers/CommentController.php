@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function getComments($id)
+    public function index($id)
     {
         return response()->json(
             Comment::with('user:id,username')
@@ -28,6 +28,7 @@ class CommentController extends Controller
             'post_id' => $validated['post_id'],
             'user_id' => auth()->id()
         ]);
+        return back();
     }
 
     public function edit(Comment $comment, CommentEditRequest $request)
@@ -36,13 +37,13 @@ class CommentController extends Controller
         $validated = $request->validated();
         $comment->comment = $validated['comment'];
         $comment->save();
-        return response()->json(200);
+        return back();
     }
 
     public function destroy(Comment $comment)
     {
         abort_if($comment->user_id != auth()->id(), 403);
         $comment->delete();
-        return response()->json(200);
+        return back();
     }
 }

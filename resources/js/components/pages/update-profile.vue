@@ -25,7 +25,7 @@
                        v-model="form.username" placeholder="user123" maxlength="255" autocomplete="off">
             </div>
             <div class="col">
-                <button class="btn btn-primary" :disabled="form.username === ''">Update username</button>
+                <button @click="setUsername" class="btn btn-primary" :disabled="form.username === ''">Update username</button>
             </div>
         </div>
         <div class="row">
@@ -59,13 +59,14 @@
                 <button class="btn btn-primary" :disabled="form.password !== form.password_confirmation || form.password === ''" @click="setPassword">Update Password</button>
             </div>
         </div>
-        <button class="btn btn-danger">Delete Profile</button>
+            <button id="delete-button" class="btn btn-danger" @click="deleteProfile">Delete Profile</button>
         </form>
     </div>
     <Footer />
 </template>
 
 <script>
+import {Inertia} from "@inertiajs/inertia";
 import NavigationBar from "../layout/NavigationBar";
 import Footer from "../layout/footer";
 export default {
@@ -97,11 +98,13 @@ export default {
                 _token : this.$page.props.csrf,
                 name: this.form.name
             };
-            if(axios.put('/profile/update/' + this.user.id, object).then((response) => {
-                return response.status === 200;
-            })){
-                this.user.name = this.form.name;
-            }
+            Inertia.put(route('user.edit', this.user.id), object, {
+                onSuccess: () => {
+                    this.user.name = this.form.name;
+                    this.form.name = '';
+                    this.sweetAlertSuccess('name');
+                }
+            });
         },
         setUsername()
         {
@@ -109,11 +112,13 @@ export default {
                 _token : this.$page.props.csrf,
                 username: this.username
             };
-            if(axios.put('/profile/update/' + this.user.id, object).then((response) => {
-                return response.status === 200;
-            })){
-                this.user.username = this.form.username;
-            }
+            Inertia.put(route('user.edit', this.user.id), object, {
+                onSuccess: () => {
+                    this.user.username = this.form.username;
+                    this.form.username = '';
+                    this.sweetAlertSuccess('username');
+                }
+            });
         },
         setEmail()
         {
@@ -121,12 +126,13 @@ export default {
                 _token : this.$page.props.csrf,
                 email: this.email
             };
-            if(axios.put('/profile/update/' + this.user.id, object).then((response) => {
-                console.log(response);
-                return response.status === 200;
-            })){
-                this.user.email = this.form.email;
-            }
+            Inertia.put(route('user.edit', this.user.id), object, {
+                onSuccess: () => {
+                    this.user.username = this.form.username; // update page
+                    this.form.email = ''; // reset input
+                    this.sweetAlertSuccess('email'); // fire success message
+                }
+            });
         },
         setPassword()
         {
@@ -135,14 +141,46 @@ export default {
                 password: this.password,
                 password_confirmation: this.password_confirmation
             };
-            axios.put('/profile/update/' + this.user.id, object).then((response) => {
-                return response.status === 200;
+            Inertia.put(route('user.edit', this.user.id), object, {
+                onSuccess: () => {
+                    this.user.username = this.form.username;
+                    this.form.password = '';
+                    this.form.password_confirmation = this.form.password;
+                    this.sweetAlertSuccess('password');
+                }
+            });
+        },
+        deleteProfile() {
+            this.$swal({
+                title: 'Are you sure you want to delete your profile?',
+                text: 'This cannot be undone!',
+                icon: 'warning',
+                showConfirmButton: true,
+                showCancelButton: true,
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Inertia.delete(route('user.destroy', this.user.id));
+                } else {
+                    return false;
+                }
+            });
+        },
+        sweetAlertSuccess(message)
+        {
+            this.$swal({
+                title: 'Your ' + message + ' has been updated!',
+                text: '',
+                icon: 'success',
+                timer: 3000
             });
         }
     }
 };
 </script>
 
-<style scoped>
-
+<style scoped lang="sass">
+#delete-button
+    display: block
+    margin: 20px auto 0
 </style>

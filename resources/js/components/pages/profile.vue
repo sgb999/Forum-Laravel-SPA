@@ -7,7 +7,10 @@
         <hr>
     </div>
     <view-topics :topics="posts.data"></view-topics>
-    <pagination class="container" v-if="posts.links" :links="posts.links" @nextPage="getTopics($event)"></pagination>
+    <div v-if="posts.data < 1" class="empty-posts">
+        <h4>There are no posts yet</h4>
+    </div>
+    <pagination class="container" :links="posts.links" @nextPage="getTopics($event)"></pagination>
     <Footer />
 </template>
 
@@ -49,6 +52,16 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style scoped lang="sass">
+.empty-posts
+    height: 200px
+    width: 80%
+    background-color: #A9A9A9
+    border-radius: 25px
+    display: block
+    margin: 0 auto
+    h4
+        display: grid
+        text-align: center
+        padding-top: 90px
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <Head><title>View Post</title></Head>
+    <Head title="View Post" />
     <navigation-bar />
     <div class="container">
         <h3>{{post.title}}</h3>
@@ -8,11 +8,9 @@
             {{post.user.username}}
         </inertia-link>
         <p>{{ post.created_at.split("T")[0] }}</p>
-        <div class="row" v-if="post.user.id === $page.props.auth.user.id">
-            <inertia-link :href="'/post/update/' + post.id" class="btn btn-primary col-1 btn-style">Edit</inertia-link>
-            <form @submit.prevent>
-                <button class="btn btn-danger" @click="deletePost">Delete</button>
-            </form>
+        <div v-if="post.user.id === $page.props.auth.user.id">
+            <inertia-link :href="route('post.edit', post.id)" class="btn btn-primary col-1 btn-style">Edit</inertia-link>
+            <button class="btn btn-danger" @click="deletePost">Delete</button>
         </div>
         <hr>
     </div>
@@ -47,11 +45,25 @@ export default {
     },
     methods: {
       deletePost(){
-          this.form.delete('/post/' + this.post.id)
+          this.$swal({
+              title: 'Are you sure you want to delete your post?',
+              text: 'Your post will be gone forever!',
+              icon: 'warning',
+              showConfirmButton: true,
+              showCancelButton: true,
+              dangerMode: true
+          }).then((result) => {
+              if(result.isConfirmed){
+                  this.form.delete(route('post.destroy', this.post.id));
+              }
+              else{
+                  return false;
+              }
+          });
       }
     },
     mounted(){
-        this.post.created_at = this.post.created_at.split(".")[0];
+        //this.post.created_at = this.post.created_at.split(".")[0];
         //this.csrfToken = document.getElementsByTagName("META")['csrf-token']['content'];
     }
 };
@@ -61,6 +73,7 @@ export default {
 a
     color: #000000
     text-decoration: none
+    margin-right: 3px
 hr
     font-weight: bold
 .btn-style

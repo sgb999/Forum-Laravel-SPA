@@ -2,6 +2,9 @@
     <div class="container">
         <h3 id="comment">Comments</h3>
         <page-loader v-if="!comments.data"/>
+        <div v-if="comments.data < 1" class="empty-comments">
+            <h4>There are no comments yet</h4>
+        </div>
         <div v-if="comments.data" :key="comment.id"
             v-for="(comment, index) in comments.data">
             <hr>
@@ -13,13 +16,13 @@
 
                 </form>
                 <div class="buttons">
-                    <button id="update" class="btn btn-primary" @click="updateComment(index, $event)" style="display: none">Update Comment</button>
-                    <button id="cancel" class="btn btn-primary" @click="cancelComment(index, $event)" style="display: none">Cancel</button>
+                    <button id="update" class="btn btn-primary" @click="updateComment(index, $event)">Update Comment</button>
+                    <button id="cancel" class="btn btn-primary" @click="cancelComment(index, $event)">Cancel</button>
                     <button id="edit" class="btn btn-primary" @click="openForm">Edit Comment</button>
                     <button id="delete" class="btn btn-danger" @click="deleteComment(index)">Delete Comment</button>
                 </div>
             </div>
-            <inertia-link :href="'/profile/' + comment.user.username">
+            <inertia-link :href="route('profile', comment.user.username)">
                 {{ comment.user.username }}
             </inertia-link>
             <p>{{ comment.created_at }}</p>
@@ -37,6 +40,7 @@
 </template>
 
 <script>
+import {Inertia} from "@inertiajs/inertia";
 import pageLoader from "./PageLoader";
 import { useForm } from "@inertiajs/inertia-vue3"
 import Pagination from "../layout/pagination";
@@ -64,11 +68,13 @@ export default {
           date: 0,
           disabled: Boolean,
           success: {},
-          form
+          form,
+          lastPaginationEvent: ''
       }
     },
     methods: {
         getComments(site) {
+            this.lastPaginationEvent = site;
             this.comments = [];
             axios.get(site).then((response) => {
                 this.comments = response.data;
@@ -77,7 +83,17 @@ export default {
             });
         },
         setComment(){
-           this.form.post('/comment');
+           this.form.post(route('comment.store'), {
+               onSuccess: () => {
+                   this.getComments(this.lastPaginationEvent);
+                   this.$swal({
+                       title: 'Your comment has been posted!',
+                       text: '',
+                       icon: 'success',
+                       timer: 3000
+                   });
+               }
+           });
            this.form.comment = '';
         },
         cancelComment(index, event){
@@ -86,28 +102,51 @@ export default {
         },
         updateComment(index, event){
             const form = event.target.parentElement.parentElement.childNodes[0];
-            const comment = {
+            const comment = useForm({
                 _token : this.$page.props.csrf,
                 comment: form.querySelector("textarea").value
-            };
-            axios.put('/comment/' + this.comments.data[index].id, comment).then((response) => {
-                if(response.status === 200)
-                {
+            });
+            Inertia.put(`/comment/${this.comments.data[index].id}`, comment, {
+                onSuccess: () => {
                     this.comments.data[index].comment = comment.comment;
                     this.closeForm(event);
-                }
-            }).catch(error => {
-                if (error.response.data.errors) {
-                    console.log(error.response.data.errors);
+                    this.$swal({
+                        title: 'Your comment has been updated!',
+                        text: '',
+                        icon: 'success',
+                        timer: 3000
+                    });
                 }
             });
+
         },
         deleteComment(index)
         {
-            axios.delete('/comment/' + this.comments.data[index].id).then((response) => {
-                if(response.status === 200) {
-                    this.comments.data.splice(index);
-                }
+            this.$swal({
+                title: 'Are you sure you want to delete your post?',
+                text: 'Your post will be gone forever!',
+                icon: 'warning',
+                showConfirmButton: true,
+                showCancelButton: true,
+                dangerMode: true
+            }).then((result) => {
+                    if(result.isConfirmed){
+                        Inertia.delete(`/comment/${this.comments.data[index].id}`, {
+                            onSuccess: () => {
+                                this.comments.data.splice(index);
+                                this.$swal({
+                                    title: 'Your comment has been Deleted!',
+                                    text: '',
+                                    icon: 'success',
+                                    timer: 3000
+                                });
+                            }
+                        });
+                    }
+                    else{
+                        return false;
+                    }
+
             });
         },
         removeUnwantedChars()
@@ -150,10 +189,25 @@ a
     text-decoration: none
 .edit-form
     display: none
+#update
+    display: none
+#cancel
+    display: none
+.empty-comments
+    height: 200px
+    width: 80%
+    background-color: #A9A9A9
+    border-radius: 25px
+    display: block
+    margin: 0 auto
+    h4
+        display: grid
+        text-align: center
+        padding-top: 90px
 .buttons
     display: flex
     flex: 1
     justify-content: left
     button
-        margin-right: 3px
+        margin: 0 3px 0 0
 </style>
