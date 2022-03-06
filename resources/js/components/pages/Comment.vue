@@ -8,13 +8,13 @@
             <p>{{ comment.comment }}</p>
             <div v-if="$page.props.auth.user.id === comment.user.id">
                 <form @submit.prevent class="edit-form">
-                    <div class="test"></div>
                     <textarea
                           class="form-control" rows="4" minlength="4">{{ comment.comment }}</textarea>
 
                 </form>
                 <div class="buttons">
                     <button id="update" class="btn btn-primary" @click="updateComment(index, $event)" style="display: none">Update Comment</button>
+                    <button id="cancel" class="btn btn-primary" @click="cancelComment(index, $event)" style="display: none">Cancel</button>
                     <button id="edit" class="btn btn-primary" @click="openForm">Edit Comment</button>
                     <button id="delete" class="btn btn-danger" @click="deleteComment(index)">Delete Comment</button>
                 </div>
@@ -26,7 +26,7 @@
         </div>
         <pagination v-if="comments.links > 3" :links="comments.links" @nextPage="getComments($event)"></pagination>
     </div>
-        <div v-if="$page.props.auth" class="container">
+        <div v-if="$page.props.auth.login" class="container">
             <form @submit.prevent>
                 <label>Post a Comment</label>
                 <textarea v-model="form.comment" class="form-control" rows="4" minlength="4"></textarea>
@@ -80,6 +80,10 @@ export default {
            this.form.post('/comment');
            this.form.comment = '';
         },
+        cancelComment(index, event){
+            event.target.parentElement.parentElement.childNodes[0].querySelector("textarea").value = this.comments.data[index].comment;
+            this.closeForm(event);
+        },
         updateComment(index, event){
             const form = event.target.parentElement.parentElement.childNodes[0];
             const comment = {
@@ -117,14 +121,18 @@ export default {
             const button = event.target.parentNode;
             event.target.closest('#edit').style.display = 'none';
             button.childNodes[0].style.display = 'block';
+            button.childNodes[1].style.display = 'block';
             button.parentNode.firstElementChild.style.display = 'block';
             button.parentNode.parentNode.getElementsByTagName('p')[0].style.display = 'none';
         },
         closeForm(event)
         {
-            event.target.parentElement.parentElement.childNodes[0].style.display = 'none';  // hide edit form
-            event.target.parentNode.parentNode.getElementsByTagName('button')[0].style.display = 'none'; // hide update button
-            event.target.parentNode.parentNode.getElementsByTagName('button')[1].style.display = 'block'; // show edit button
+            const div = event.target.parentElement.parentElement;
+            const buttons = div.getElementsByTagName('div')[0];
+            div.getElementsByTagName('form')[0].style.display = 'none';  // hide edit form
+            buttons.childNodes[0].style.display = 'none'; // hide update button
+            buttons.childNodes[1].style.display = 'none'; // hide cancel button
+            buttons.childNodes[2].style.display = 'block'; // show edit button
             event.target.parentNode.parentNode.parentNode.getElementsByTagName('p')[0].style.display = 'block'; // show updated text
         }
     },
