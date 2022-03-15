@@ -1,0 +1,94 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"Indicates what fields are available at the top level of a query operation."
+type Query {
+    "Find a single user by an identifying attribute."
+    user(
+      "Search by primary key."
+      id: ID @eq @rules(apply: ["required"])
+
+      "Search by email address."
+      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    "List multiple users."
+    users(
+      "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+      name: String @where(operator: "like")
+    ): [User!]! @paginate(defaultCount: 10)
+
+    category: [Category!]! @all
+    post(
+        "search bt primary key."
+    id: ID @eq @rules(apply: ["required"])
+    ): Post @find
+    topics(
+        "search by category_id"
+    category_id: ID @eq @rules(apply: ["required"])
+    ): [Post]! @all
+    comment(
+        post_id: ID @eq @rules(apply: ["required"])
+    ): [Comment] @all
+}
+
+"Account of a person who utilizes this application."
+type User {
+    "Unique primary key."
+    id: ID!
+
+    "Non-unique name."
+    name: String!
+
+    "Unique username."
+    username: String!
+
+    "Unique email address."
+    email: String!
+
+    "none-unique password."
+    password: String!
+
+    "When the email was verified."
+    email_verified_at: DateTime
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+}
+
+type Category {
+    id: ID!
+    name: String!
+    description: String!
+}
+
+type Post {
+    "Unique ID"
+    id: ID!
+    title: String!
+    content: String!
+    user: User! @belongsTo
+    category: Category! @belongsTo
+    comments: [Comment] @hasMany
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+}
+
+type Comment{
+    id: ID!
+    comment: String!
+    post: Post! @belongsTo
+    user: User! @belongsTo
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+}

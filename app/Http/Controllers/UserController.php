@@ -55,7 +55,7 @@ class UserController extends Controller
     {
         abort_unless($user->id == auth()->id(), 403);
         $validated  = $request->validated();
-        $user->update($validated);
+        $user->update(array_filter($validated));
         $user->save();
         return back();
     }
@@ -74,4 +74,22 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return back();
     }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     * can be used on profile page, is quicker to execute but would require a new vue component
+
+    public function getUserPosts($id)
+    {
+        return response()->json(
+            User::whereId($id)
+                ->with(['post' => function ($query){
+                   $query->with('category:id,name')
+                   ->select('id', 'title', 'user_id', 'category_id', 'created_at')
+                   ->orderBy('created_at', 'desc');
+                }])->select('id', 'username')
+                ->paginate(10)
+        );
+    }*/
 }

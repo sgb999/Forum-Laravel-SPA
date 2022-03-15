@@ -9,7 +9,7 @@
         </inertia-link>
         <p>{{ post.created_at.split("T")[0] }}</p>
         <div v-if="post.user.id === $page.props.auth.user.id">
-            <inertia-link :href="route('post.edit', post.id)" class="btn btn-primary col-1 btn-style">Edit</inertia-link>
+            <inertia-link :href="route('post.edit', post.id)" id="edit" class="btn btn-primary col-1 btn-style">Edit</inertia-link>
             <button class="btn btn-danger" @click="deletePost">Delete</button>
         </div>
         <hr>
@@ -21,7 +21,7 @@
 <script>
 import {useForm} from "@inertiajs/inertia-vue3";
 import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/footer";
+import Footer from "../layout/Footer";
 import Comment from "./Comment";
 export default {
     name: "ViewPost",
@@ -78,4 +78,6 @@ hr
     font-weight: bold
 .btn-style
     color: #ffffff
+#edit
+    width: 70px
 </style>

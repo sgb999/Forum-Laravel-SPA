@@ -2,24 +2,22 @@
 
 namespace App\Models;
 
-use App\Http\Traits\BelongsToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Comment extends Model
+class Chat extends Model
 {
     use HasFactory;
-    use BelongsToUser;
 
     protected $fillable = [
-      'comment',
-      'post_id',
-      'user_id'
+      'user_id_1',
+      'user_id_2'
     ];
 
-    public function post(): BelongsTo
+    public function user(): BelongsToMany
     {
-        return $this->belongsTo(Post::class);
+        return $this->belongsToMany(User::class, 'users');
     }
 }

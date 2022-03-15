@@ -51,7 +51,7 @@ export default {
       }
     },
     data(){
-        let form = useForm({
+        const form = useForm({
             id: this.post.id,
             title : this.post.title,
             content :  this.post.content,

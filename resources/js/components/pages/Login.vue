@@ -43,7 +43,24 @@ export default {
     },
     methods: {
         login(){
-            this.form.post(route('login.post'));
+            this.form.post(route('login.post'), {
+                onSuccess: () => {
+                    this.$swal({
+                        title: 'You are now logged in!',
+                        text: '',
+                        icon: 'success',
+                        timer: 3000
+                    });
+                },
+                onError: () => {
+                    this.$swal({
+                        title: 'The provided credentials do not match our records.',
+                        text: '',
+                        icon: 'error',
+                        timer: 3000
+                    });
+                }
+            });
         }
     }
 };
