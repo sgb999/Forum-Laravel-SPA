@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\{
-    Index,
+use App\Http\Controllers\{MessageController,
     UserController,
     CategoryController,
     PostController,
-    CommentController
-};
+    CommentController,
+    ChatController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +30,7 @@ Route::controller(PostController::class)->group(function (){
 });
 Route::get('/comment/view/{id}', [CommentController::class, 'index'])->name('comment.index');
 Route::get('/profile/{user:username}', [UserController::class, 'profile'])->name('profile');
+Route::get('/profile/user-posts/{id}', [UserController::class, 'getUserPosts']);
 
 Route::middleware(['auth'])->group(function(){
     Route::controller(CommentController::class)
@@ -46,6 +46,12 @@ Route::middleware(['auth'])->group(function(){
             Route::put('/profile/update/{user}', 'updateProfile')->name('user.edit');
             Route::delete('/profile/update{user}', 'destroy')->name('user.destroy');
         });
+
+    Route::inertia('/chats', 'chat')->name('chat.index');
+    Route::get('/user-chats', [ChatController::class, 'getChats'])->name('chat.get-chats');
+    Route::get('/message/user/{user}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/message', [MessageController::class, 'store'])->name('message.store');
+    Route::get('/message{chat}', [MessageController::class, 'index'])->name('message.index');
 
     //Post routing
     Route::prefix('/post')->controller(PostController::class)->group(function () {

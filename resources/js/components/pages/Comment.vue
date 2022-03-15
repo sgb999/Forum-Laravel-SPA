@@ -27,7 +27,7 @@
             </inertia-link>
             <p>{{ comment.created_at }}</p>
         </div>
-        <pagination v-if="comments.links > 3" :links="comments.links" @nextPage="getComments($event)"></pagination>
+        <pagination :links="comments.links" @nextPage="getComments($event)"></pagination>
     </div>
         <div v-if="$page.props.auth.login" class="container">
             <form @submit.prevent>
@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import {Inertia} from "@inertiajs/inertia";
 import pageLoader from "./PageLoader";
 import { useForm } from "@inertiajs/inertia-vue3"
 import Pagination from "../layout/pagination";
@@ -106,7 +105,7 @@ export default {
                 _token : this.$page.props.csrf,
                 comment: form.querySelector("textarea").value
             });
-            Inertia.put(`/comment/${this.comments.data[index].id}`, comment, {
+            this.$inertia.put(`/comment/${this.comments.data[index].id}`, comment, {
                 onSuccess: () => {
                     this.comments.data[index].comment = comment.comment;
                     this.closeForm(event);
@@ -123,15 +122,15 @@ export default {
         deleteComment(index)
         {
             this.$swal({
-                title: 'Are you sure you want to delete your post?',
-                text: 'Your post will be gone forever!',
+                title: 'Are you sure you want to delete your comment?',
+                text: 'Your comment will be gone forever!',
                 icon: 'warning',
                 showConfirmButton: true,
                 showCancelButton: true,
                 dangerMode: true
             }).then((result) => {
                     if(result.isConfirmed){
-                        Inertia.delete(`/comment/${this.comments.data[index].id}`, {
+                        this.$inertia.delete(`/comment/${this.comments.data[index].id}`, {
                             onSuccess: () => {
                                 this.comments.data.splice(index);
                                 this.$swal({

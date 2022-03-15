@@ -13,9 +13,14 @@
                 <input v-model="form.name" id="name" class="form-control col-4 d-flex justify-content-center" type="text"
                        placeholder="John Doe"  maxlength="255"
                        autocomplete="off">
+                <div v-if="form.errors.name" class="alert-danger">
+                    <ul>
+                        <li>{{ form.errors.email }}</li>
+                    </ul>
+                </div>
             </div>
             <div class="col">
-                <button class="btn btn-primary" :disabled="form.name === ''" @click="setName">Update Name</button>
+                <button class="btn btn-primary" :disabled="form.name === ''" @click="update">Update Name</button>
             </div>
         </div>
         <div class="row">
@@ -23,9 +28,14 @@
             <div class="col">
                 <input id="username" class="form-control col-4 d-flex justify-content-center" type="text"
                        v-model="form.username" placeholder="user123" maxlength="255" autocomplete="off">
+                <div v-if="form.errors.username" class="alert-danger">
+                    <ul>
+                        <li>{{ form.errors.email }}</li>
+                    </ul>
+                </div>
             </div>
             <div class="col">
-                <button @click="setUsername" class="btn btn-primary" :disabled="form.username === ''">Update username</button>
+                <button @click="update" class="btn btn-primary" :disabled="form.username === ''">Update username</button>
             </div>
         </div>
         <div class="row">
@@ -33,9 +43,14 @@
             <div class="col">
                 <input v-model="form.email" id="email" class="form-control col-4 d-flex justify-content-center" type="text"
                         placeholder="example@example.com" maxlength="255" autocomplete="off">
+                <div v-if="form.errors.email" class="alert-danger">
+                    <ul>
+                        <li>{{ form.errors.email }}</li>
+                    </ul>
+                </div>
             </div>
             <div class="col">
-                <button class="btn btn-primary" :disabled="form.email === ''" @click="setEmail">Update E-mail Address</button>
+                <button class="btn btn-primary" :disabled="form.email === ''" @click="update">Update E-mail Address</button>
             </div>
         </div>
         <div class="row">
@@ -44,6 +59,11 @@
                 <input v-model="form.password" id="password" class="form-control col-4 d-flex justify-content-center" type="text"
                        placeholder="Password: Minimum 8 characters" minlength="8" maxlength="255"
                        autocomplete="off">
+                <div v-if="form.errors.password" class="alert-danger">
+                    <ul>
+                        <li>{{ form.errors.password }}</li>
+                    </ul>
+                </div>
             </div>
             <div class="col">
             </div>
@@ -54,9 +74,14 @@
                 <input id="password_confirmation" class="form-control col-4 d-flex justify-content-center"
                        type="text" v-model="form.password_confirmation" placeholder="Must match Password"
                        maxlength="255" autocomplete="off">
+                <div v-if="form.errors.password_confirmation" class="alert-danger">
+                    <ul>
+                        <li>{{ form.errors.password_confirmation }}</li>
+                    </ul>
+                </div>
             </div>
             <div class="col">
-                <button class="btn btn-primary" :disabled="form.password !== form.password_confirmation || form.password === ''" @click="setPassword">Update Password</button>
+                <button class="btn btn-primary"  @click="update">Update Password</button>
             </div>
         </div>
             <button id="delete-button" class="btn btn-danger" @click="deleteProfile">Delete Profile</button>
@@ -69,6 +94,7 @@
 import {Inertia} from "@inertiajs/inertia";
 import NavigationBar from "../layout/NavigationBar";
 import Footer from "../layout/footer";
+import { useForm } from "@inertiajs/inertia-vue3"
 export default {
     name: "update-profile",
     components: {
@@ -81,72 +107,44 @@ export default {
         }
     },
     data(){
+        let form = useForm ({
+            name: '',
+            username: '',
+            email: '',
+            password: '',
+            password_confirmation: ''
+        });
          return{
-             form: {
-                 name: '',
-                 username: '',
-                 email: '',
-                 password: '',
-                 password_confirmation: ''
-             }
+             form
          }
     },
     methods:{
-        setName()
+        update()
         {
-            const object = {
-                _token : this.$page.props.csrf,
-                name: this.form.name
-            };
-            Inertia.put(route('user.edit', this.user.id), object, {
+            this.form.put(route('user.edit', this.user.id), {
                 onSuccess: () => {
-                    this.user.name = this.form.name;
-                    this.form.name = '';
-                    this.sweetAlertSuccess('name');
-                }
-            });
-        },
-        setUsername()
-        {
-            const object = {
-                _token : this.$page.props.csrf,
-                username: this.username
-            };
-            Inertia.put(route('user.edit', this.user.id), object, {
-                onSuccess: () => {
-                    this.user.username = this.form.username;
-                    this.form.username = '';
-                    this.sweetAlertSuccess('username');
-                }
-            });
-        },
-        setEmail()
-        {
-            const object = {
-                _token : this.$page.props.csrf,
-                email: this.email
-            };
-            Inertia.put(route('user.edit', this.user.id), object, {
-                onSuccess: () => {
-                    this.user.username = this.form.username; // update page
-                    this.form.email = ''; // reset input
+                    if(this.form.name){
+                        this.user.name = this.form.name;
+                        this.form.name = '';
+                    }
+                    if(this.form.username){
+                        this.user.username = this.form.username;
+                        this.form.username = '';
+                    }
+                    if(this.form.email){
+                        this.user.email = this.form.email;
+                        this.form.email = '';
+                    }
+
                     this.sweetAlertSuccess('email'); // fire success message
-                }
-            });
-        },
-        setPassword()
-        {
-            const object = {
-                _token : this.$page.props.csrf,
-                password: this.password,
-                password_confirmation: this.password_confirmation
-            };
-            Inertia.put(route('user.edit', this.user.id), object, {
-                onSuccess: () => {
-                    this.user.username = this.form.username;
-                    this.form.password = '';
-                    this.form.password_confirmation = this.form.password;
-                    this.sweetAlertSuccess('password');
+                },
+                onError: () => {
+                    this.$swal({
+                        title: 'Ooops, something went wrong',
+                        text: '',
+                        icon: 'error',
+                        timer: 3000
+                    });
                 }
             });
         },

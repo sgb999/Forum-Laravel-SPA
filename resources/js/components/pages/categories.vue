@@ -15,7 +15,7 @@
 
 <script>
 import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/footer";
+import Footer from "../layout/Footer";
 export default {
     name: "categories",
     components: {

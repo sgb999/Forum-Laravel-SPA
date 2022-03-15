@@ -1,9 +1,10 @@
 <template>
-    <Head><title>Profile</title></Head>
+    <Head title="Profile" />
     <navigation-bar />
     <div class="container">
         <h1>{{ user.username }}</h1>
-        <inertia-link v-if="user.id === $page.props.auth.user.id" :href="'/profile/update/' + user.username" class="btn btn-primary">Edit Profile</inertia-link>
+        <inertia-link v-if="user.id === $page.props.auth.user.id" :href="route('user.index', user.username)" class="btn btn-primary">Edit Profile</inertia-link>
+        <inertia-link v-if="user.id !== $page.props.auth.user.id && $page.props.auth.login" :href="route('chat.show', user.id)" class="btn btn-primary">Message</inertia-link>
         <hr>
     </div>
     <view-topics :topics="posts.data"></view-topics>
@@ -47,7 +48,7 @@ export default {
         }
     },
     mounted() {
-        this.getTopics(/view-profile-posts/ + this.user.id);
+        this.getTopics('/view-profile-posts/' + this.user.id);
     }
 };
 </script>

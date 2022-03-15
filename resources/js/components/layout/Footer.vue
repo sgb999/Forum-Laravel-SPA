@@ -8,17 +8,15 @@
 
 <script>
 export default {
-    name: "footer"
+    name: "Footer"
 };
 </script>
-
-<style scoped>
-.footer {
-    font-family: Arial, serif;
-    color: #F1F3F1;
-    clear: both;
-    margin-top: 20px;
-    text-align: center;
-    background-color: #000000;
-}
+<style scoped lang="sass">
+.footer
+    font-family: Arial, serif
+    color: #F1F3F1
+    clear: both
+    margin-top: 20px
+    text-align: center
+    background-color: #000000
 </style>
