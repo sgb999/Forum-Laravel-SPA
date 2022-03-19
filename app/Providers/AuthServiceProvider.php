@@ -24,13 +24,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        /**Gate::define('managePost', function ($post){
-         manage = false;
-         * if($post == auth()->id(){
-         * manage = true;
-         * }
-            return $manage
-        });*/
     }
 }

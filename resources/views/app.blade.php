@@ -18,6 +18,9 @@
     .container {
         margin-top: 20px;
     }
+    .filepond--credits{
+        display: none
+    }
 </style>
 @inertia
 </body>

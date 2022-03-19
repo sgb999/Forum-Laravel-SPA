@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\{UserEditRequest, UserStoreRequest, UserLoginRequest};
+use App\Models\TempoarayFile;
+use App\Http\Requests\{ImagePostRequest, UserEditRequest, UserStoreRequest, UserLoginRequest};
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,15 +24,27 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig
+     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist
+     */
     public function register(UserStoreRequest $request){
             $validated = $request->validated();
 
-            User::create([
+            $user = User::create([
                 'name' => $validated['name'],
                 'username' => $validated['username'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password'])
             ]);
+
+            if($validated['avatar'] !== null){
+                $tempFile = TempoarayFile::where('folder', $validated['avatar'])->first();
+                $user->addMedia(storage_path('app/public/avatars/tmp/' . $validated['avatar'] . '/' . $tempFile->filename))
+                ->toMediaCollection('avatar');
+                rmdir(storage_path('app/public/avatars/tmp/' . $validated['avatar']));
+                $tempFile->delete();
+            }
             if(auth()->attempt([
                 'email' => $validated['email'],
                 'password' => $validated['password']
@@ -40,13 +53,30 @@ class UserController extends Controller
             }
     }
 
-    public function profile(User $user)
+    public function profile($username)
     {
+        $user = User::where('username', $username)
+            ->with('media')
+            ->select('id', 'username')
+            ->first();
         return inertia('profile', compact(['user']));
     }
 
-    public function updateProfilePage(User $user)
+    public function getUser($id){
+        return response()->json(
+            User::whereId($id)
+            ->with('media')
+            ->select('id')
+            ->first()
+        );
+    }
+
+    public function updateProfilePage($username)
     {
+        $user = User::where('username', $username)
+            ->with('media')
+            ->select('id', 'name', 'username', 'email')
+            ->first();
         abort_unless($user->id == auth()->id(), 403);
         return inertia('update-profile', compact(['user']));
     }
@@ -55,7 +85,18 @@ class UserController extends Controller
     {
         abort_unless($user->id == auth()->id(), 403);
         $validated  = $request->validated();
-        $user->update(array_filter($validated));
+        array_filter($validated);
+        if(array_key_exists('banner', $validated) || array_key_exists('avatar', $validated)){
+            foreach ($validated as $key => $value){
+                $tempFile = TempoarayFile::where('folder', $value)->first();
+                $user->clearMediaCollection($key);
+                $user->addMedia(storage_path('app/public/' . $key . '/tmp/' . $value . '/' . $tempFile->filename))
+                    ->toMediaCollection($key);
+                rmdir(storage_path('app/public/' . $key . '/tmp/' . $value));
+                $tempFile->delete();
+            }
+        }
+        $user->update($validated);
         $user->save();
         return back();
     }
@@ -73,6 +114,22 @@ class UserController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return back();
+    }
+
+    public function storeImage(ImagePostRequest $request)
+    {
+        foreach (array_filter($request->validated()) as $key => $value)
+        $file     = $request->file($key);
+        $filename = $file->getClientOriginalName();
+        $folder   = uniqid() . '-' . now()->timestamp;
+        $file->storeAs('/public/' . $key . '/tmp/' . $folder, $filename);
+
+        TempoarayFile::create([
+              'folder'   => $folder,
+              'filename' => $filename
+          ]);
+
+        return $folder;
     }
 
     /**

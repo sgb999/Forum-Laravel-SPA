@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\TempoarayFile;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        /*
+         * to delete all tempoaray files older than 24 hours
+         */
+        $schedule->call(function () {
+            $files = TempoarayFile::where('created_at' < strtotime('-1 day'))
+                ->get();
+            foreach ($files as $file){
+                rmdir(storage_path('app/public/avatars/tmp/' . $file->folder));
+                $file->delete();
+            }
+        })->daily();
         // $schedule->command('inspire')->hourly();
     }
 
