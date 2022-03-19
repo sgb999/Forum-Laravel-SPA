@@ -14,8 +14,10 @@
         <hr>
         <form @submit.prevent>
             <label>Post a Comment</label>
-            <textarea v-model="form.message" class="form-control" rows="4" minlength="4"></textarea>
-            <button @click="sendMessage" type="submit" class="btn btn-primary">Submit</button>
+            <div class="message">
+                <textarea v-model="form.message" class="form-control" rows="4" minlength="4"></textarea>
+                <button @click="sendMessage" type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </form>
     </div>
     <Footer />
@@ -75,4 +77,11 @@ export default {
 a
     text-decoration: none
     color: #000000
+.message
+    display: flex
+    flex: 1
+    button
+        margin-top: 25px
+        height: 40px
+        margin-left: 10px
 </style>

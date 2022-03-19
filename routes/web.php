@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::inertia('/', 'LoadTitles', ['url' => '/view-all-topics/'])->name('home');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::post('/tmp/image', [UserController::class, 'storeImage']);
 Route::controller(PostController::class)->group(function (){
     Route::get('/view-all-topics/', 'viewAllTopics');
     Route::get('/view-topics/{id}', 'viewTopics')->name('topics.show');
@@ -29,7 +29,7 @@ Route::controller(PostController::class)->group(function (){
     Route::get('/view-post/{id}', 'viewPost')->name('post.show');
 });
 Route::get('/comment/view/{id}', [CommentController::class, 'index'])->name('comment.index');
-Route::get('/profile/{user:username}', [UserController::class, 'profile'])->name('profile');
+Route::get('/profile/{username}', [UserController::class, 'profile'])->name('profile');
 Route::get('/profile/user-posts/{id}', [UserController::class, 'getUserPosts']);
 
 Route::middleware(['auth'])->group(function(){
@@ -42,9 +42,10 @@ Route::middleware(['auth'])->group(function(){
     Route::controller(UserController::class)
         ->group(function (){
             Route::get('/log-out', 'logOutMethod')->name('log-out');
-            Route::get('/profile/update/{user:username}', 'updateProfilePage')->name('user.index');
+            Route::get('/profile/update/{username}', 'updateProfilePage')->name('user.index');
             Route::put('/profile/update/{user}', 'updateProfile')->name('user.edit');
             Route::delete('/profile/update{user}', 'destroy')->name('user.destroy');
+            Route::get('/user/{user}', 'getUser');
         });
 
     Route::inertia('/chats', 'chat')->name('chat.index');

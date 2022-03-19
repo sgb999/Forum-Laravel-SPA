@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use phpDocumentor\Reflection\Types\Nullable;
 
 class UserStoreRequest extends FormRequest
 {
@@ -27,7 +28,8 @@ class UserStoreRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['required', 'email', 'unique:users,email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'max:255', 'confirmed']
+            'password' => ['required', 'string', 'min:8', 'max:255', 'confirmed'],
+            'avatar' => ['present', 'nullable', 'string']
         ];
     }
 }
