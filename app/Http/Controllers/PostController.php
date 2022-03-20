@@ -33,7 +33,10 @@ class PostController extends Controller
     public function viewPost($id)
     {
         return inertia('ViewPost', ['post' => Post::whereId($id)
-            ->with('user:id,username')
+            ->with(['user' => function ($query){
+               $query->with('media')
+                     ->select('id', 'username');
+            }])
             ->select('id', 'title', 'content', 'user_id', 'created_at', 'category_id')
             ->first()]);
     }

@@ -4,10 +4,13 @@
     <div class="container">
         <h3>{{post.title}}</h3>
         <p>{{post.content}}</p>
-        <inertia-link :href="'/profile/' + post.user.username">
-            {{post.user.username}}
-        </inertia-link>
-        <p>{{ post.created_at.split("T")[0] }}</p>
+        <div class="user">
+            <img class="avatar"  :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
+            <inertia-link :href="'/profile/' + post.user.username">
+                {{post.user.username}}
+            </inertia-link>
+            <p>{{ post.created_at.split("T")[0] }}</p>
+        </div>
         <div v-if="post.user.id === $page.props.auth.user.id">
             <inertia-link :href="route('post.edit', post.id)" id="edit" class="btn btn-primary col-1 btn-style">Edit</inertia-link>
             <button class="btn btn-danger" @click="deletePost">Delete</button>
@@ -39,7 +42,8 @@ export default {
         let form = useForm({
             _token : this.$page.props.csrf
         });
-        return{
+        return {
+            avatar: '',
             form
         }
     },
@@ -63,13 +67,32 @@ export default {
       }
     },
     mounted(){
-        //this.post.created_at = this.post.created_at.split(".")[0];
-        //this.csrfToken = document.getElementsByTagName("META")['csrf-token']['content'];
+        this.post.user.media.forEach(el => {
+            if(el.collection_name === 'avatar'){
+                this.avatar = el.original_url;
+            }
+        })
     }
 };
 </script>
 
 <style scoped lang="sass">
+.user
+    padding: 10px
+    width: fit-content
+    border-radius: 10px
+    background-color: lightblue
+    a
+        color: #0f6efd
+    .avatar
+        height: 32px
+        width: 32px
+        border-radius: 50%
+        border: solid 2px #FFFFFF
+        margin-right: 20px
+        color: rgb(228, 230, 235)
+    p
+        padding-left: 51px
 a
     color: #000000
     text-decoration: none
