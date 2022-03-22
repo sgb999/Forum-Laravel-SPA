@@ -18,7 +18,7 @@
                     <label>Category</label>
                 <div class="form-group">
                     <select v-model="form.category_id" class="form-control-sm">
-                        <option disabled value="">Please select one</option>
+                        <option hidden value="">Please select one</option>
                         <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
 
                     </select>

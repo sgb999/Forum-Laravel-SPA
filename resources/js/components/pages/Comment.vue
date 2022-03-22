@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h3 id="comment">Comments</h3>
+        <h3>Comments</h3>
         <page-loader v-if="!comments.data"/>
         <div v-if="comments.data < 1" class="empty-comments">
             <h4>There are no comments yet</h4>
@@ -27,9 +27,9 @@
             </inertia-link>
             <p>{{ comment.created_at }}</p>
         </div>
-        <pagination :links="comments.links" @nextPage="getComments($event)"></pagination>
-    </div>
-        <div v-if="$page.props.auth.login" class="container">
+        <pagination v-if="comments.links" :links="comments.links" @nextPage="getComments($event)"></pagination>
+
+        <div v-if="$page.props.auth.login">
             <form @submit.prevent>
                 <label>Post a Comment</label>
                 <textarea v-model="form.comment" class="form-control" rows="4" minlength="4"></textarea>
@@ -37,6 +37,7 @@
                 <button class="btn btn-primary" :disabled="Object.keys(form.comment).length < 4 || form.processing" v-on:click="setComment">Post Comment</button>
             </form>
         </div>
+    </div>
 </template>
 
 <script>

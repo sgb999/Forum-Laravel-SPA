@@ -81,7 +81,7 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
-    FilePondPluginImagePreview
+    FilePondPluginImagePreview,
 );
 
 import { useForm } from "@inertiajs/inertia-vue3"

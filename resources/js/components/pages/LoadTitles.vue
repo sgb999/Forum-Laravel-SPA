@@ -41,6 +41,7 @@ export default {
             this.topics.data = null;
             axios.get(site).then((response) => {
                     this.topics = response.data;
+                    console.log(this.topics.links);
                 }).catch((error) => {
                 console.log('Error: ' + error);
             });

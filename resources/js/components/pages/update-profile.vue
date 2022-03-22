@@ -1,12 +1,10 @@
 <template>
     <navigation-bar />
     <div class="container">
-        <img class="banner" v-if="banner" :src="banner" alt="banner">
-        <img class="banner" v-if="!banner" src="/storage/default/banner.jpg" alt="banner">
+        <img class="banner" :src="banner ? banner : '/storage/default/banner.jpg'" alt="banner">
         <div class="container">
             <div class="user">
-                <img class="avatar" v-if="avatar" :src="avatar" alt="avatar">
-                <img class="avatar" v-if="!avatar" src="/storage/default/avatar.png" alt="avatar">
+                <img class="avatar" v-if="avatar" :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
                 <h1 id="name-tag">{{ user.name }}</h1>
                 <h1 id="username-tag">{{ user.username }}</h1>
                 <h1 id="email-tag">{{ user.email }}</h1>
@@ -23,6 +21,9 @@
                 label-idle="Drop image here..."
                 v-bind:allow-multiple="false"
                 accepted-file-types="image/jpeg, image/png"
+                :allowFileSizeValidation="true"
+                maxFileSize="2MB"
+                labelMaxFileSizeExceeded="File is too large"
                 :required="false"
                 :server="{
                            url: '/tmp/image',
@@ -48,6 +49,9 @@
                 v-bind:allow-multiple="false"
                 :required="false"
                 accepted-file-types="image/jpeg, image/png"
+                :allowFileSizeValidation="true"
+                maxFileSize="1MB"
+                labelMaxFileSizeExceeded="File is too large"
                 :server="{
                            url: '/tmp/image',
                            headers: {
@@ -68,9 +72,9 @@
                 <input v-model="form.name" id="name" class="form-control col-4 d-flex justify-content-center" type="text"
                        placeholder="John Doe"  maxlength="255"
                        autocomplete="off">
-                <div v-if="form.errors.name" class="alert-danger">
+                <div v-if="$page.props.errors.name" class="alert-danger">
                     <ul>
-                        <li>{{ form.errors.email }}</li>
+                        <li>{{ $page.props.errors.name }}</li>
                     </ul>
                 </div>
             </div>
@@ -83,9 +87,9 @@
             <div class="col">
                 <input id="username" class="form-control col-4 d-flex justify-content-center" type="text"
                        v-model="form.username" placeholder="user123" maxlength="255" autocomplete="off">
-                <div v-if="form.errors.username" class="alert-danger">
+                <div v-if="$page.props.errors.username" class="alert-danger">
                     <ul>
-                        <li>{{ form.errors.email }}</li>
+                        <li>{{ $page.props.errors.username }}</li>
                     </ul>
                 </div>
             </div>
@@ -98,9 +102,9 @@
             <div class="col">
                 <input v-model="form.email" id="email" class="form-control col-4 d-flex justify-content-center" type="text"
                         placeholder="example@example.com" maxlength="255" autocomplete="off">
-                <div v-if="form.errors.email" class="alert-danger">
+                <div v-if="$page.props.errors.email" class="alert-danger">
                     <ul>
-                        <li>{{ form.errors.email }}</li>
+                        <li>{{ $page.props.errors.email }}</li>
                     </ul>
                 </div>
             </div>
@@ -114,9 +118,9 @@
                 <input v-model="form.password" id="password" class="form-control col-4 d-flex justify-content-center" type="text"
                        placeholder="Password: Minimum 8 characters" minlength="8" maxlength="255"
                        autocomplete="off">
-                <div v-if="form.errors.password" class="alert-danger">
+                <div v-if="$page.props.errors.password" class="alert-danger">
                     <ul>
-                        <li>{{ form.errors.password }}</li>
+                        <li>{{ $page.props.errors.password }}</li>
                     </ul>
                 </div>
             </div>
@@ -129,9 +133,9 @@
                 <input id="password_confirmation" class="form-control col-4 d-flex justify-content-center"
                        type="text" v-model="form.password_confirmation" placeholder="Must match Password"
                        maxlength="255" autocomplete="off">
-                <div v-if="form.errors.password_confirmation" class="alert-danger">
+                <div v-if="$page.props.errors.password_confirmation" class="alert-danger">
                     <ul>
-                        <li>{{ form.errors.password_confirmation }}</li>
+                        <li>{{ $page.props.errors.password_confirmation }}</li>
                     </ul>
                 </div>
             </div>
@@ -161,7 +165,7 @@ import "filepond/dist/filepond.min.css";
 
 // Import image preview plugin styles
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
-
+import FilePondPluginImageValidateSize from 'filepond-plugin-image-validate-size';
 // Import image preview and file type validation plugins
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
@@ -169,7 +173,8 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
-    FilePondPluginImagePreview
+    FilePondPluginImagePreview,
+    FilePondPluginImageValidateSize
 );
 export default {
     name: "update-profile",
@@ -184,19 +189,18 @@ export default {
         }
     },
     data(){
-        let form = useForm ({
-            banner: '',
-            avatar: '',
-            name: '',
-            username: '',
-            email: '',
-            password: '',
-            password_confirmation: ''
-        });
-         return{
+        return{
              banner: '',
              avatar: '',
-             form
+             form : {
+                 banner: '',
+                 avatar: '',
+                 name: '',
+                 username: '',
+                 email: '',
+                 password: '',
+                 password_confirmation: ''
+             }
          }
     },
     methods:{
@@ -214,7 +218,7 @@ export default {
         },
         updateEmail(){
             const object = {
-                email : this.form.password
+                email : this.form.email
             }
             this.update(object, 'email')
         },
