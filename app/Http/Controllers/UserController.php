@@ -116,19 +116,20 @@ class UserController extends Controller
         return back();
     }
 
-    public function storeImage(ImagePostRequest $request)
+    public function storeImage(ImagePostRequest $request): string
     {
-        foreach (array_filter($request->validated()) as $key => $value)
-        $file     = $request->file($key);
-        $filename = $file->getClientOriginalName();
-        $folder   = uniqid() . '-' . now()->timestamp;
-        $file->storeAs('/public/' . $key . '/tmp/' . $folder, $filename);
+        $folder = '';
+        foreach (array_filter($request->validated()) as $key => $value) {
+            $file     = $request->file($key);
+            $filename = $file->getClientOriginalName();
+            $folder   = uniqid() . '-' . now()->timestamp;
+            $file->storeAs('/public/' . $key . '/tmp/' . $folder, $filename);
 
-        TempoarayFile::create([
-              'folder'   => $folder,
-              'filename' => $filename
-          ]);
-
+            TempoarayFile::create([
+                  'folder'   => $folder,
+                  'filename' => $filename
+              ]);
+        }
         return $folder;
     }
 

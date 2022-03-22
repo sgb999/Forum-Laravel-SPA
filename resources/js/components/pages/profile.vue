@@ -19,7 +19,7 @@
             <h4>There are no posts yet</h4>
         </div>
     </div>
-    <pagination class="container" :links="posts.links" @nextPage="getTopics($event)"></pagination>
+    <pagination v-if="posts.links" class="container" :links="posts.links" @nextPage="getTopics($event)"></pagination>
     <Footer />
 </template>
 
@@ -111,4 +111,12 @@ export default {
         margin-top: 50px
     .right
         margin-left: 50vw
+@media screen and (max-width: 600px)
+    .banner
+        height: 400px
+        top: 240px
+    .user
+        padding-top: 350px
+    .content
+        padding-top: 500px
 </style>
