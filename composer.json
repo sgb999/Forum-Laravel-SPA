@@ -24,6 +24,7 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
+        "opsway/psr12-strict-coding-standard": "^0.7.0",
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0"
     },
@@ -40,6 +41,8 @@
         }
     },
     "scripts": {
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

@@ -1,72 +1,88 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Models\TempoarayFile;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\{ImagePostRequest, UserEditRequest, UserStoreRequest, UserLoginRequest};
+use App\Http\Requests\ImagePostRequest;
+use App\Http\Requests\UserEditRequest;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserStoreRequest;
+use App\Models\TemporaryFile;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Response;
+use Inertia\ResponseFactory;
+
+use function array_filter;
+use function array_key_exists;
+use function rmdir;
+use function uniqid;
 
 class UserController extends Controller
 {
-    public function login(UserLoginRequest $request)
+    public function login(UserLoginRequest $request) : RedirectResponse
     {
         $credentials = $request->validated();
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('home');
-        }
-        else{
+        } else {
             return redirect()->back()->withErrors([
-              'email' => 'The provided credentials do not match our records.',
-          ]);
+                'email' => 'The provided credentials do not match our records.',
+            ]);
         }
     }
 
-    /**
-     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig
-     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist
-     * @throws \Throwable
-     */
-    public function register(UserStoreRequest $request){
+    public function register(UserStoreRequest $request) : RedirectResponse
+    {
         $validated = $request->validated();
         DB::transaction(function () use ($validated) {
             $user = User::create([
-                 'name' => $validated['name'],
-                 'username' => $validated['username'],
-                 'email' => $validated['email'],
-                 'password' => Hash::make($validated['password'])
-             ]);
+                'name'     => $validated['name'],
+                'username' => $validated['username'],
+                'email'    => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-            if($validated['avatar'] !== null){
-                $tempFile = TempoarayFile::where('folder', $validated['avatar'])->first();
-                $user->addMedia(storage_path('app/public/avatar/tmp/' . $validated['avatar'] . '/' . $tempFile->filename))
+            if ($validated['avatar'] !== null) {
+                $tempFile = TemporaryFile::where('folder', $validated['avatar'])->first();
+                $user->addMedia(
+                    storage_path('app/public/avatar/tmp/' . $validated['avatar'] . '/' . $tempFile->filename)
+                )
                     ->toMediaCollection('avatar');
                 rmdir(storage_path('app/public/avatar/tmp/' . $validated['avatar']));
                 $tempFile->delete();
             }
         });
-        if(auth()->attempt([
-               'email' => $validated['email'],
-               'password' => $validated['password']
-           ]))
-        {
+        if (
+            auth()->attempt([
+                'email'    => $validated['email'],
+                'password' => $validated['password'],
+            ])
+        ) {
             return redirect()->to(route('home'));
         }
+
+        return back();
     }
 
-    public function profile($username)
+    public function profile(string $username) : Response|ResponseFactory
     {
-        $user = User::where('username', $username)
+        return inertia('profile', [
+            'user' => User::where('username', $username)
             ->with('media')
             ->select('id', 'username')
-            ->first();
-        return inertia('profile', compact(['user']));
+            ->first(),
+        ]);
     }
 
-    public function getUser($id){
+    public function getUser(int $id) : JsonResponse
+    {
         return response()->json(
             User::whereId($id)
                 ->with('media')
@@ -75,24 +91,24 @@ class UserController extends Controller
         );
     }
 
-    public function updateProfilePage($username)
+    public function updateProfilePage(string $username) : Response|ResponseFactory
     {
         $user = User::where('username', $username)
             ->with('media')
             ->select('id', 'name', 'username', 'email')
             ->first();
-        abort_unless($user->id == auth()->id(), 403);
-        return inertia('update-profile', compact(['user']));
+        abort_unless($user->id === auth()->id(), 403);
+        return inertia('update-profile', ['user' => $user]);
     }
 
-    public function updateProfile(User $user, UserEditRequest $request)
+    public function updateProfile(User $user, UserEditRequest $request) : RedirectResponse
     {
-        abort_unless($user->id == auth()->id(), 403);
-        $validated  = $request->validated();
+        abort_unless($user->id === auth()->id(), 403);
+        $validated = $request->validated();
         array_filter($validated);
-        if(array_key_exists('banner', $validated) || array_key_exists('avatar', $validated)){
-            foreach ($validated as $key => $value){
-                $tempFile = TempoarayFile::where('folder', $value)->first();
+        if (array_key_exists('banner', $validated) || array_key_exists('avatar', $validated)) {
+            foreach ($validated as $key => $value) {
+                $tempFile = TemporaryFile::where('folder', $value)->first();
                 $user->clearMediaCollection($key);
                 $user->addMedia(storage_path('app/public/' . $key . '/tmp/' . $value . '/' . $tempFile->filename))
                     ->toMediaCollection($key);
@@ -105,14 +121,14 @@ class UserController extends Controller
         return back();
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user) : RedirectResponse
     {
         abort_unless($user->id === auth()->id(), 403);
         $user->delete();
         return back();
     }
 
-    public function logOutMethod(Request $request)
+    public function logOutMethod(Request $request) : RedirectResponse
     {
         auth()->logout();
         $request->session()->invalidate();
@@ -120,7 +136,7 @@ class UserController extends Controller
         return back();
     }
 
-    public function storeImage(ImagePostRequest $request): string
+    public function storeImage(ImagePostRequest $request) : string
     {
         $folder = '';
         foreach (array_filter($request->validated()) as $key => $value) {
@@ -129,19 +145,17 @@ class UserController extends Controller
             $folder   = uniqid() . '-' . now()->timestamp;
             $file->storeAs('/public/' . $key . '/tmp/' . $folder, $filename);
 
-            TempoarayFile::create([
-                                      'folder'   => $folder,
-                                      'filename' => $filename
-                                  ]);
+            TemporaryFile::create([
+                'folder'   => $folder,
+                'filename' => $filename,
+            ]);
         }
         return $folder;
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse
      * can be used on profile page, is quicker to execute but would require a new vue component
-    public function getUserPosts($id)
+    public function getUserPosts(int $id)
     {
     return response()->json(
     User::whereId($id)

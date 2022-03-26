@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\{MessageController,
-    UserController,
-    CategoryController,
-    PostController,
-    CommentController,
-    ChatController};
+declare(strict_types=1);
+
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::inertia('/', 'LoadTitles', ['url' => '/view-all-topics/'])->name('home');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::post('/tmp/image', [UserController::class, 'storeImage']);
-Route::controller(PostController::class)->group(function (){
+Route::controller(PostController::class)->group(function () {
     Route::get('/view-all-topics/', 'viewAllTopics');
     Route::get('/view-topics/{id}', 'viewTopics')->name('topics.show');
     Route::get('/view-topics-ajax/{id}', 'viewTopicsAjax');
@@ -32,15 +34,15 @@ Route::get('/comment/view/{id}', [CommentController::class, 'index'])->name('com
 Route::get('/profile/{username}', [UserController::class, 'profile'])->name('profile');
 Route::get('/profile/user-posts/{id}', [UserController::class, 'getUserPosts']);
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth'])->group(function () {
     Route::controller(CommentController::class)
-        ->prefix('/comment')->group(function (){
-        Route::post('/','store')->name('comment.store');
-        Route::put('/{comment}','edit')->name('comment.edit');
-        Route::delete('/{comment}', 'destroy')->name('comment.destroy');
-    });
+        ->prefix('/comment')->group(function () {
+            Route::post('/', 'store')->name('comment.store');
+            Route::put('/{comment}', 'edit')->name('comment.edit');
+            Route::delete('/{comment}', 'destroy')->name('comment.destroy');
+        });
     Route::controller(UserController::class)
-        ->group(function (){
+        ->group(function () {
             Route::get('/log-out', 'logOutMethod')->name('log-out');
             Route::get('/profile/update/{username}', 'updateProfilePage')->name('user.index');
             Route::match(['post', 'put'], '/profile/update/{user}', 'updateProfile')->name('user.edit');
@@ -64,7 +66,7 @@ Route::middleware(['auth'])->group(function(){
     });
 });
 
-Route::middleware(['guest'])->controller(UserController::class)->group(function(){
+Route::middleware(['guest'])->controller(UserController::class)->group(function () {
     Route::inertia('/login', 'Login')->name('login.index');
     Route::post('/login', 'login')->name('login.post');
     Route::post('/register', 'register')->name('register.post');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -15,8 +17,8 @@ class CommentFactory extends Factory
     {
         return [
             'comment' => $this->faker->text,
-            'post_id' => $this->faker->numberBetween(1,500),
-            'user_id' => $this->faker->numberBetween(1,500)
+            'post_id' => $this->faker->numberBetween(1, 500),
+            'user_id' => $this->faker->numberBetween(1, 500),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,19 +13,18 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-      'chat_id',
-      'message',
-      'user_id'
+        'chat_id',
+        'message',
+        'user_id',
     ];
 
-    public function user(): BelongsTo
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function chat(): BelongsTo
+    public function chat() : BelongsTo
     {
         return $this->belongsTo(Chat::class);
     }
-
 }

@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console;
 
-use App\Models\TempoarayFile;
+use App\Models\TemporaryFile;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+
+use function rmdir;
+use function strtotime;
 
 class Kernel extends ConsoleKernel
 {
     /**
      * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
      */
     protected function schedule(Schedule $schedule)
     {
@@ -20,9 +22,9 @@ class Kernel extends ConsoleKernel
          * to delete all tempoaray files older than 24 hours
          */
         $schedule->call(function () {
-            $files = TempoarayFile::where('created_at' < strtotime('-1 day'))
+            $files = TemporaryFile::where('created_at' < strtotime('-1 day'))
                 ->get();
-            foreach ($files as $file){
+            foreach ($files as $file) {
                 rmdir(storage_path('app/public/avatars/tmp/' . $file->folder));
                 $file->delete();
             }
@@ -32,12 +34,10 @@ class Kernel extends ConsoleKernel
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
