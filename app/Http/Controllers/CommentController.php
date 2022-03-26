@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentEditRequest;
 use App\Http\Requests\CommentStoreRequest;
 use App\Models\Comment;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class CommentController extends Controller
 {
-    public function index($id)
+    public function index(int $id) : JsonResponse
     {
         return response()->json(
             Comment::with('user:id,username')
@@ -20,29 +23,29 @@ class CommentController extends Controller
         );
     }
 
-    public function store(CommentStoreRequest $request)
+    public function store(CommentStoreRequest $request) : RedirectResponse
     {
         $validated = $request->validated();
         Comment::create([
             'comment' => $validated['comment'],
             'post_id' => $validated['post_id'],
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
         return back();
     }
 
-    public function edit(Comment $comment, CommentEditRequest $request)
+    public function edit(Comment $comment, CommentEditRequest $request) : RedirectResponse
     {
-        abort_if($comment->user_id != auth()->id(), 403);
-        $validated = $request->validated();
+        abort_if($comment->user_id !== auth()->id(), 403);
+        $validated        = $request->validated();
         $comment->comment = $validated['comment'];
         $comment->save();
         return back();
     }
 
-    public function destroy(Comment $comment)
+    public function destroy(Comment $comment) : RedirectResponse
     {
-        abort_if($comment->user_id != auth()->id(), 403);
+        abort_if($comment->user_id !== auth()->id(), 403);
         $comment->delete();
         return back();
     }

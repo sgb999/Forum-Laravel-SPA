@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
+
+use function array_merge;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -12,6 +15,7 @@ class HandleInertiaRequests extends Middleware
      * The root template that's loaded on the first page visit.
      *
      * @see https://inertiajs.com/server-side-setup#root-template
+     *
      * @var string
      */
     protected $rootView = 'app';
@@ -20,10 +24,8 @@ class HandleInertiaRequests extends Middleware
      * Determines the current asset version.
      *
      * @see https://inertiajs.com/asset-versioning
-     * @param  \Illuminate\Http\Request  $request
-     * @return string|null
      */
-    public function version(Request $request): ?string
+    public function version(Request $request) : ?string
     {
         return parent::version($request);
     }
@@ -32,20 +34,18 @@ class HandleInertiaRequests extends Middleware
      * Defines the props that are shared by default.
      *
      * @see https://inertiajs.com/shared-data
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
      */
-    public function share(Request $request): array
+    public function share(Request $request) : array
     {
         return array_merge(parent::share($request), [
-            'auth' =>  [
+            'auth' => [
                 'login' => auth()->check(),
-                'user' => [
-                    'id' => auth()->check() ? auth()->id() : null,
-                    'username' => auth()->check() ? auth()->user()->username : null
-                ]
+                'user'  => [
+                    'id'       => auth()->check() ? auth()->id() : null,
+                    'username' => auth()->check() ? auth()->user()->username : null,
+                ],
             ],
-            'csrf' => csrf_token()
+            'csrf' => csrf_token(),
         ]);
     }
 }

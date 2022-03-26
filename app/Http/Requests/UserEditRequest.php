@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,28 +10,24 @@ class UserEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize(): bool
+    public function authorize() : bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules(): array
+    public function rules() : array
     {
         return [
-            'name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'username' => ['sometimes','nullable', 'max:255', 'string', 'unique:users,username'],
-            'email' => ['sometimes', 'nullable', 'email', 'unique:users,email', 'max:255'],
-            'password' => ['sometimes', 'nullable','min:8', 'max:255', 'confirmed'],
-            'avatar' => ['sometimes', 'nullable', 'string'],
-            'banner' => ['sometimes', 'nullable', 'string']
+            'name'     => ['sometimes', 'nullable', 'string', 'max:255'],
+            'username' => ['sometimes', 'nullable', 'max:255', 'string', 'unique:users,username'],
+            'email'    => ['sometimes', 'nullable', 'email', 'unique:users,email', 'max:255'],
+            'password' => ['sometimes', 'nullable', 'min:8', 'max:255', 'confirmed'],
+            'avatar'   => ['sometimes', 'nullable', 'string'],
+            'banner'   => ['sometimes', 'nullable', 'string'],
         ];
     }
 }
