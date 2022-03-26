@@ -18,4 +18,8 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
+    #change file-upload-type
+    php_value post_max_size 60M
+    php_value upload_max_filesize 60M
 </IfModule>

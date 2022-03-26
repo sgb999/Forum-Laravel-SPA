@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function(){
         ->group(function (){
             Route::get('/log-out', 'logOutMethod')->name('log-out');
             Route::get('/profile/update/{username}', 'updateProfilePage')->name('user.index');
-            Route::put('/profile/update/{user}', 'updateProfile')->name('user.edit');
+            Route::match(['post', 'put'], '/profile/update/{user}', 'updateProfile')->name('user.edit');
             Route::delete('/profile/update{user}', 'destroy')->name('user.destroy');
             Route::get('/user/{user}', 'getUser');
         });

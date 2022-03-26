@@ -4,7 +4,7 @@
     <div class="container">
         <div class="form">
             <h1>Register an account</h1>
-                <form @submit.prevent>
+            <form @submit.prevent>
                 <div class="form-group">
                     <label>Name</label>
                     <input class="form-control col-4 d-flex justify-content-center" type="text" v-model="form.name" placeholder="John Doe" maxlength="255" required>
@@ -64,26 +64,20 @@ import NavigationBar from "../layout/NavigationBar";
 import Footer from "../layout/footer";
 // Import Vue FilePond
 import vueFilePond from "vue-filepond";
-
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
-
 // Import FilePond plugins
 // Please note that you need to install these plugins separately
-
 // Import image preview plugin styles
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
-
 // Import image preview and file type validation plugins
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
 );
-
 import { useForm } from "@inertiajs/inertia-vue3"
 export default {
     name: "Register",
@@ -123,5 +117,4 @@ export default {
     width: 60%
     border: 10px solid rgba(255,255,255, 0.5)
     border-radius: 10px
-
 </style>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TempoarayFile;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\{ImagePostRequest, UserEditRequest, UserStoreRequest, UserLoginRequest};
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,38 +20,41 @@ class UserController extends Controller
         }
         else{
             return redirect()->back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ]);
+              'email' => 'The provided credentials do not match our records.',
+          ]);
         }
     }
 
     /**
      * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig
      * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist
+     * @throws \Throwable
      */
     public function register(UserStoreRequest $request){
-            $validated = $request->validated();
-
+        $validated = $request->validated();
+        DB::transaction(function () use ($validated) {
             $user = User::create([
-                'name' => $validated['name'],
-                'username' => $validated['username'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password'])
-            ]);
+                 'name' => $validated['name'],
+                 'username' => $validated['username'],
+                 'email' => $validated['email'],
+                 'password' => Hash::make($validated['password'])
+             ]);
 
             if($validated['avatar'] !== null){
                 $tempFile = TempoarayFile::where('folder', $validated['avatar'])->first();
-                $user->addMedia(storage_path('app/public/avatars/tmp/' . $validated['avatar'] . '/' . $tempFile->filename))
-                ->toMediaCollection('avatar');
-                rmdir(storage_path('app/public/avatars/tmp/' . $validated['avatar']));
+                $user->addMedia(storage_path('app/public/avatar/tmp/' . $validated['avatar'] . '/' . $tempFile->filename))
+                    ->toMediaCollection('avatar');
+                rmdir(storage_path('app/public/avatar/tmp/' . $validated['avatar']));
                 $tempFile->delete();
             }
-            if(auth()->attempt([
-                'email' => $validated['email'],
-                'password' => $validated['password']
-            ])){
-                return redirect()->to(route('home'));
-            }
+        });
+        if(auth()->attempt([
+               'email' => $validated['email'],
+               'password' => $validated['password']
+           ]))
+        {
+            return redirect()->to(route('home'));
+        }
     }
 
     public function profile($username)
@@ -65,9 +69,9 @@ class UserController extends Controller
     public function getUser($id){
         return response()->json(
             User::whereId($id)
-            ->with('media')
-            ->select('id')
-            ->first()
+                ->with('media')
+                ->select('id')
+                ->first()
         );
     }
 
@@ -126,9 +130,9 @@ class UserController extends Controller
             $file->storeAs('/public/' . $key . '/tmp/' . $folder, $filename);
 
             TempoarayFile::create([
-                  'folder'   => $folder,
-                  'filename' => $filename
-              ]);
+                                      'folder'   => $folder,
+                                      'filename' => $filename
+                                  ]);
         }
         return $folder;
     }
@@ -137,17 +141,16 @@ class UserController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * can be used on profile page, is quicker to execute but would require a new vue component
-
     public function getUserPosts($id)
     {
-        return response()->json(
-            User::whereId($id)
-                ->with(['post' => function ($query){
-                   $query->with('category:id,name')
-                   ->select('id', 'title', 'user_id', 'category_id', 'created_at')
-                   ->orderBy('created_at', 'desc');
-                }])->select('id', 'username')
-                ->paginate(10)
-        );
+    return response()->json(
+    User::whereId($id)
+    ->with(['post' => function ($query){
+    $query->with('category:id,name')
+    ->select('id', 'title', 'user_id', 'category_id', 'created_at')
+    ->orderBy('created_at', 'desc');
+    }])->select('id', 'username')
+    ->paginate(10)
+    );
     }*/
 }

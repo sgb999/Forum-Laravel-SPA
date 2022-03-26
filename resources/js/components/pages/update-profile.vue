@@ -1,7 +1,8 @@
 <template>
     <navigation-bar />
     <div class="container">
-        <img class="banner" :src="banner ? banner : '/storage/default/banner.jpg'" alt="banner">
+        <img v-if="banner" class="banner" :src="banner" alt="banner">
+        <img v-if="!banner" class="banner" :src="'/storage/default/banner.jpg'" alt="banner">
         <div class="container">
             <div class="user">
                 <img class="avatar" v-if="avatar" :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
@@ -15,25 +16,25 @@
             <div class="row">
                 <label for="name">Profile Banner</label>
                 <div class="col">
-            <file-pond
-                name="banner"
-                ref="pond"
-                label-idle="Drop image here..."
-                v-bind:allow-multiple="false"
-                accepted-file-types="image/jpeg, image/png"
-                :allowFileSizeValidation="true"
-                maxFileSize="2MB"
-                labelMaxFileSizeExceeded="File is too large"
-                :required="false"
-                :server="{
+                    <file-pond
+                        name="banner"
+                        ref="pond"
+                        label-idle="Drop image here..."
+                        v-bind:allow-multiple="false"
+                        accepted-file-types="image/jpeg, image/png"
+                        :allowFileSizeValidation="true"
+                        maxFileSize="2MB"
+                        labelMaxFileSizeExceeded="File is too large"
+                        :required="false"
+                        :server="{
                            url: '/tmp/image',
                            headers: {
                                'X-CSRF-TOKEN': $page.props.csrf
                            }
                     }"
-                @processfile="profileBanner"
-                @removefile="profileBanner"
-            />
+                        @processfile="profileBanner"
+                        @removefile="profileBanner"
+                    />
                 </div>
                 <div class="col">
                     <button class="btn btn-primary" :disabled="form.banner === ''" @click="updateProfileBanner">Update Profile Banner</button>
@@ -42,107 +43,107 @@
             <div class="row">
                 <label for="name">Profile Picture</label>
                 <div class="col">
-            <file-pond
-                name="avatar"
-                ref="pond"
-                label-idle="Drop image here..."
-                v-bind:allow-multiple="false"
-                :required="false"
-                accepted-file-types="image/jpeg, image/png"
-                :allowFileSizeValidation="true"
-                maxFileSize="1MB"
-                labelMaxFileSizeExceeded="File is too large"
-                :server="{
+                    <file-pond
+                        name="avatar"
+                        ref="pond"
+                        label-idle="Drop image here..."
+                        v-bind:allow-multiple="false"
+                        :required="false"
+                        accepted-file-types="image/jpeg, image/png"
+                        :allowFileSizeValidation="true"
+                        maxFileSize="1MB"
+                        labelMaxFileSizeExceeded="File is too large"
+                        :server="{
                            url: '/tmp/image',
                            headers: {
                                'X-CSRF-TOKEN': $page.props.csrf
                            }
                     }"
-                @processfile="profilePicture"
-                @removefile="profilePicture"
-            />
+                        @processfile="profilePicture"
+                        @removefile="profilePicture"
+                    />
                 </div>
                 <div class="col">
                     <button class="btn btn-primary" :disabled="form.avatar === ''" @click="updateProfilePicture">Update Profile Picture</button>
                 </div>
             </div>
-        <div class="row">
-            <label for="name">Name</label>
-            <div class="col">
-                <input v-model="form.name" id="name" class="form-control col-4 d-flex justify-content-center" type="text"
-                       placeholder="John Doe"  maxlength="255"
-                       autocomplete="off">
-                <div v-if="$page.props.errors.name" class="alert-danger">
-                    <ul>
-                        <li>{{ $page.props.errors.name }}</li>
-                    </ul>
+            <div class="row">
+                <label for="name">Name</label>
+                <div class="col">
+                    <input v-model="form.name" id="name" class="form-control col-4 d-flex justify-content-center" type="text"
+                           placeholder="John Doe"  maxlength="255"
+                           autocomplete="off">
+                    <div v-if="$page.props.errors.name" class="alert-danger">
+                        <ul>
+                            <li>{{ $page.props.errors.name }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" :disabled="form.name === ''" @click="updateName">Update Name</button>
                 </div>
             </div>
-            <div class="col">
-                <button class="btn btn-primary" :disabled="form.name === ''" @click="updateName">Update Name</button>
-            </div>
-        </div>
-        <div class="row">
-            <label for="username">Username</label>
-            <div class="col">
-                <input id="username" class="form-control col-4 d-flex justify-content-center" type="text"
-                       v-model="form.username" placeholder="user123" maxlength="255" autocomplete="off">
-                <div v-if="$page.props.errors.username" class="alert-danger">
-                    <ul>
-                        <li>{{ $page.props.errors.username }}</li>
-                    </ul>
+            <div class="row">
+                <label for="username">Username</label>
+                <div class="col">
+                    <input id="username" class="form-control col-4 d-flex justify-content-center" type="text"
+                           v-model="form.username" placeholder="user123" maxlength="255" autocomplete="off">
+                    <div v-if="$page.props.errors.username" class="alert-danger">
+                        <ul>
+                            <li>{{ $page.props.errors.username }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <button @click="updateUsername" class="btn btn-primary" :disabled="form.username === ''">Update username</button>
                 </div>
             </div>
-            <div class="col">
-                <button @click="updateUsername" class="btn btn-primary" :disabled="form.username === ''">Update username</button>
-            </div>
-        </div>
-        <div class="row">
-            <label for="email">Email</label>
-            <div class="col">
-                <input v-model="form.email" id="email" class="form-control col-4 d-flex justify-content-center" type="text"
-                        placeholder="example@example.com" maxlength="255" autocomplete="off">
-                <div v-if="$page.props.errors.email" class="alert-danger">
-                    <ul>
-                        <li>{{ $page.props.errors.email }}</li>
-                    </ul>
+            <div class="row">
+                <label for="email">Email</label>
+                <div class="col">
+                    <input v-model="form.email" id="email" class="form-control col-4 d-flex justify-content-center" type="text"
+                           placeholder="example@example.com" maxlength="255" autocomplete="off">
+                    <div v-if="$page.props.errors.email" class="alert-danger">
+                        <ul>
+                            <li>{{ $page.props.errors.email }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" :disabled="form.email === ''" @click="updateEmail">Update E-mail Address</button>
                 </div>
             </div>
-            <div class="col">
-                <button class="btn btn-primary" :disabled="form.email === ''" @click="updateEmail">Update E-mail Address</button>
-            </div>
-        </div>
-        <div class="row">
-            <label for="password">Password</label>
-            <div class="col">
-                <input v-model="form.password" id="password" class="form-control col-4 d-flex justify-content-center" type="text"
-                       placeholder="Password: Minimum 8 characters" minlength="8" maxlength="255"
-                       autocomplete="off">
-                <div v-if="$page.props.errors.password" class="alert-danger">
-                    <ul>
-                        <li>{{ $page.props.errors.password }}</li>
-                    </ul>
+            <div class="row">
+                <label for="password">Password</label>
+                <div class="col">
+                    <input v-model="form.password" id="password" class="form-control col-4 d-flex justify-content-center" type="text"
+                           placeholder="Password: Minimum 8 characters" minlength="8" maxlength="255"
+                           autocomplete="off">
+                    <div v-if="$page.props.errors.password" class="alert-danger">
+                        <ul>
+                            <li>{{ $page.props.errors.password }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
                 </div>
             </div>
-            <div class="col">
-            </div>
-        </div>
-        <div class="row">
-            <label for="password_confirmation">Confirm Password</label>
-            <div class="col">
-                <input id="password_confirmation" class="form-control col-4 d-flex justify-content-center"
-                       type="text" v-model="form.password_confirmation" placeholder="Must match Password"
-                       maxlength="255" autocomplete="off">
-                <div v-if="$page.props.errors.password_confirmation" class="alert-danger">
-                    <ul>
-                        <li>{{ $page.props.errors.password_confirmation }}</li>
-                    </ul>
+            <div class="row">
+                <label for="password_confirmation">Confirm Password</label>
+                <div class="col">
+                    <input id="password_confirmation" class="form-control col-4 d-flex justify-content-center"
+                           type="text" v-model="form.password_confirmation" placeholder="Must match Password"
+                           maxlength="255" autocomplete="off">
+                    <div v-if="$page.props.errors.password_confirmation" class="alert-danger">
+                        <ul>
+                            <li>{{ $page.props.errors.password_confirmation }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" :disabled="form.password === '' || form.password_confirmation === ''" @click="updatePassword">Update Password</button>
                 </div>
             </div>
-            <div class="col">
-                <button class="btn btn-primary" :disabled="form.password === '' || form.password_confirmation === ''" @click="updatePassword">Update Password</button>
-            </div>
-        </div>
             <button id="delete-button" class="btn btn-danger" @click="deleteProfile">Delete Profile</button>
         </form>
     </div>
@@ -190,18 +191,18 @@ export default {
     },
     data(){
         return{
-             banner: '',
-             avatar: '',
-             form : {
-                 banner: '',
-                 avatar: '',
-                 name: '',
-                 username: '',
-                 email: '',
-                 password: '',
-                 password_confirmation: ''
-             }
-         }
+            banner: '',
+            avatar: '',
+            form : {
+                banner: '',
+                avatar: '',
+                name: '',
+                username: '',
+                email: '',
+                password: '',
+                password_confirmation: ''
+            }
+        }
     },
     methods:{
         updateName(){
@@ -232,7 +233,7 @@ export default {
         update(object, attribute)
         {
             object._token = this.$page.props.csrf;
-            this.$inertia.put(route('user.edit', this.user.id), object,{
+            this.$inertia.post(route('user.edit', this.user.id), object,{
                 onSuccess: () => {
                     switch(attribute){
                         case 'name':
@@ -259,6 +260,20 @@ export default {
                             document.getElementsByName("banner")[0].value = '';
                             this.form.banner = '';
                     }
+                    axios.get('/user/' + id).then(resp => {
+                        resp.data.media.forEach(el => {
+                            if(el.collection_name === 'banner'){
+                                console.log("response")
+                                console.log(el.original_url);
+                                this.banner = el.original_url;
+                                console.log("banner")
+                                console.log(this.banner);
+                            }
+                            if(el.collection_name === 'avatar'){
+                                this.avatar = el.original_url;
+                            }
+                        });
+                    });
                     this.sweetAlertSuccess(attribute); // fire success message
                 },
                 onError: () => {
@@ -268,36 +283,58 @@ export default {
                         icon: 'error',
                         timer: 3000
                     });
+                    axios.get('/user/' + id).then(resp => {
+                        resp.data.media.forEach(el => {
+                            if(el.collection_name === 'banner'){
+                                console.log("response")
+                                console.log(el.original_url);
+                                this.banner = el.original_url;
+                                console.log("banner")
+                                console.log(this.banner);
+                            }
+                            if(el.collection_name === 'avatar'){
+                                this.avatar = el.original_url;
+                            }
+                        });
+                    });
                 }
             });
+            this.updateImages();
         },
         updateProfilePicture() {
             const object = {
-                avatar : this.form.avatar
+                avatar : this.form.avatar,
+                _method : 'PUT'
             }
             this.update(object, 'profile picture');
-            axios.get('/user/' + this.user.id).then(resp => {
-                resp.data.media.forEach(el => {
-                    if(el.collection_name === 'avatar'){
-                        this.avatar = el.original_url;
-                    }
-
-                })
-            });
+            //this.updateImages();
         },
         updateProfileBanner() {
             const object = {
                 banner : this.form.banner,
+                _method : 'PUT'
             };
             this.update(object, 'profile banner');
-            axios.get('/user/' + this.user.id).then(resp => {
-                resp.data.media.forEach(el => {
-                    if(el.collection_name === 'banner'){
-                        this.banner = el.original_url;
-                    }
-
-                })
-            });
+            //this.updateImages();
+        },
+        updateImages(){
+            const id = this.user.id;
+            setTimeout(function(){
+                axios.get('/user/' + id).then(resp => {
+                    resp.data.media.forEach(el => {
+                        if(el.collection_name === 'banner'){
+                            console.log("response")
+                            console.log(el.original_url);
+                            this.banner = el.original_url;
+                            console.log("banner")
+                            console.log(this.banner);
+                        }
+                        if(el.collection_name === 'avatar'){
+                            this.avatar = el.original_url;
+                        }
+                    });
+                });
+            }, 3000);
         },
         profilePicture(){
             this.form.avatar = document.getElementsByName("avatar")[0].value;
@@ -339,7 +376,7 @@ export default {
             if(el.collection_name === 'avatar'){
                 this.avatar = el.original_url;
             }
-        })
+        });
     }
 };
 </script>

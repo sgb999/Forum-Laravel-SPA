@@ -33,10 +33,6 @@ export default {
             type: [],
             required: true
         }
-    },
-    mounted() {
-        console.log("pagination");
-        console.log(this.links);
     }
 };
 </script>

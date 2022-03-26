@@ -94,7 +94,6 @@ export default {
             display: grid
             text-align: center
             padding-top: 90px
-
 .user
     padding-top: 550px
     position: absolute
