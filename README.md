@@ -16,6 +16,8 @@
 <p>How to run the project:</p>
     <ol>
         <li>Configure .env.example to a .env file with your database configurations and the app URL tag (this is important due to the images on the site using the full url pathway)</li>
+        <li>install composer, then run composer install</li>
+        <li>install node.js then run npm install</li>
         <li>Run the database migrations, e.g, php artisan migrate</li>
         <li>Run the database seeders, e.g, php db:seed</li>
         <li>Compile webpack assets, e.g, npm run dev or npm run production</li>
