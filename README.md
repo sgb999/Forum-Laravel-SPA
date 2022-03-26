@@ -19,6 +19,6 @@
         <li>Run the database migrations, e.g, php artisan migrate</li>
         <li>Run the database seeders, e.g, php db:seed</li>
         <li>Compile webpack assets, e.g, npm run dev or npm run production</li>
-        <li>Serve the website, e.g, php artisan serve</li>
         <li>Link the storage file ot the public root directory, e.g, php artisan storage:link</li>
+        <li>Serve the website, e.g, php artisan serve</li>
     </ol>
