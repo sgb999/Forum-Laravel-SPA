@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +13,6 @@ class TempoarayFile extends Model
 
     protected $fillable = [
         'filename',
-        'folder'
+        'folder',
     ];
 }
