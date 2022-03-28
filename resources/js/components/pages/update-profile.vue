@@ -260,20 +260,17 @@ export default {
                             document.getElementsByName("banner")[0].value = '';
                             this.form.banner = '';
                     }
-                    axios.get('/user/' + id).then(resp => {
-                        resp.data.media.forEach(el => {
-                            if(el.collection_name === 'banner'){
-                                console.log("response")
-                                console.log(el.original_url);
-                                this.banner = el.original_url;
-                                console.log("banner")
-                                console.log(this.banner);
-                            }
-                            if(el.collection_name === 'avatar'){
-                                this.avatar = el.original_url;
-                            }
-                        });
+                  axios.get('/user/' + this.user.id).then(resp => {
+                    console.log(resp);
+                    resp.data.media.forEach(el => {
+                      if(el.collection_name === 'banner'){
+                        this.banner = el.original_url;
+                      }
+                      if(el.collection_name === 'avatar'){
+                        this.avatar = el.original_url;
+                      }
                     });
+                  });
                     this.sweetAlertSuccess(attribute); // fire success message
                 },
                 onError: () => {
@@ -283,24 +280,22 @@ export default {
                         icon: 'error',
                         timer: 3000
                     });
-                    axios.get('/user/' + id).then(resp => {
-                        resp.data.media.forEach(el => {
-                            if(el.collection_name === 'banner'){
-                                console.log("response")
-                                console.log(el.original_url);
-                                this.banner = el.original_url;
-                                console.log("banner")
-                                console.log(this.banner);
-                            }
-                            if(el.collection_name === 'avatar'){
-                                this.avatar = el.original_url;
-                            }
-                        });
-                    });
                 }
             });
-            this.updateImages();
+            //this.updateImages();
         },
+      getUserData(){
+        axios.get('/user/' + this.user.id).then(resp => {
+          resp.data.media.forEach(el => {
+            if(el.collection_name === 'banner'){
+              this.banner = el.original_url;
+            }
+            if(el.collection_name === 'avatar'){
+              this.avatar = el.original_url;
+            }
+          });
+        });
+      },
         updateProfilePicture() {
             const object = {
                 avatar : this.form.avatar,
@@ -323,11 +318,7 @@ export default {
                 axios.get('/user/' + id).then(resp => {
                     resp.data.media.forEach(el => {
                         if(el.collection_name === 'banner'){
-                            console.log("response")
-                            console.log(el.original_url);
                             this.banner = el.original_url;
-                            console.log("banner")
-                            console.log(this.banner);
                         }
                         if(el.collection_name === 'avatar'){
                             this.avatar = el.original_url;
