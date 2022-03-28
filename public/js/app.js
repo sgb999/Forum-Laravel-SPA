@@ -22397,14 +22397,11 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_4___default()((filepond_plu
               _this.form.banner = '';
           }
 
-          axios.get('/user/' + id).then(function (resp) {
+          axios.get('/user/' + _this.user.id).then(function (resp) {
+            console.log(resp);
             resp.data.media.forEach(function (el) {
               if (el.collection_name === 'banner') {
-                console.log("response");
-                console.log(el.original_url);
                 _this.banner = el.original_url;
-                console.log("banner");
-                console.log(_this.banner);
               }
 
               if (el.collection_name === 'avatar') {
@@ -22423,25 +22420,23 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_4___default()((filepond_plu
             icon: 'error',
             timer: 3000
           });
-
-          axios.get('/user/' + id).then(function (resp) {
-            resp.data.media.forEach(function (el) {
-              if (el.collection_name === 'banner') {
-                console.log("response");
-                console.log(el.original_url);
-                _this.banner = el.original_url;
-                console.log("banner");
-                console.log(_this.banner);
-              }
-
-              if (el.collection_name === 'avatar') {
-                _this.avatar = el.original_url;
-              }
-            });
-          });
         }
+      }); //this.updateImages();
+    },
+    getUserData: function getUserData() {
+      var _this2 = this;
+
+      axios.get('/user/' + this.user.id).then(function (resp) {
+        resp.data.media.forEach(function (el) {
+          if (el.collection_name === 'banner') {
+            _this2.banner = el.original_url;
+          }
+
+          if (el.collection_name === 'avatar') {
+            _this2.avatar = el.original_url;
+          }
+        });
       });
-      this.updateImages();
     },
     updateProfilePicture: function updateProfilePicture() {
       var object = {
@@ -22460,20 +22455,16 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_4___default()((filepond_plu
     updateImages: function updateImages() {
       var id = this.user.id;
       setTimeout(function () {
-        var _this2 = this;
+        var _this3 = this;
 
         axios.get('/user/' + id).then(function (resp) {
           resp.data.media.forEach(function (el) {
             if (el.collection_name === 'banner') {
-              console.log("response");
-              console.log(el.original_url);
-              _this2.banner = el.original_url;
-              console.log("banner");
-              console.log(_this2.banner);
+              _this3.banner = el.original_url;
             }
 
             if (el.collection_name === 'avatar') {
-              _this2.avatar = el.original_url;
+              _this3.avatar = el.original_url;
             }
           });
         });
@@ -22486,7 +22477,7 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_4___default()((filepond_plu
       this.form.banner = document.getElementsByName("banner")[0].value;
     },
     deleteProfile: function deleteProfile() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$swal({
         title: 'Are you sure you want to delete your profile?',
@@ -22497,7 +22488,7 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_4___default()((filepond_plu
         dangerMode: true
       }).then(function (result) {
         if (result.isConfirmed) {
-          _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_0__.Inertia["delete"](route('user.destroy', _this3.user.id));
+          _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_0__.Inertia["delete"](route('user.destroy', _this4.user.id));
         } else {
           return false;
         }
@@ -22513,15 +22504,15 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_4___default()((filepond_plu
     }
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this5 = this;
 
     this.user.media.forEach(function (el) {
       if (el.collection_name === 'banner') {
-        _this4.banner = el.original_url;
+        _this5.banner = el.original_url;
       }
 
       if (el.collection_name === 'avatar') {
-        _this4.avatar = el.original_url;
+        _this5.avatar = el.original_url;
       }
     });
   }
