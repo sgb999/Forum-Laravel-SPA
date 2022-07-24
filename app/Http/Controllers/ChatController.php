@@ -65,6 +65,9 @@ class ChatController extends Controller
                 'user_id_2' => $id,
             ]);
         }
-        return inertia('message', ['id' => $chat->id]);
+        return inertia('message', [
+            'id'       => $chat->id,
+            'messages' => route('message.index', $id),
+        ]);
     }
 }

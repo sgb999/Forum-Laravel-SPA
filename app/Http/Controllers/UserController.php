@@ -115,6 +115,7 @@ class UserController extends Controller
                 rmdir(storage_path('app/public/' . $key . '/tmp/' . $value));
                 $tempFile->delete();
             }
+            return back();
         }
         $user->update($validated);
         $user->save();

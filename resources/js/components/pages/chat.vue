@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/Footer";
+import NavigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/Footer.vue";
 export default {
     name: "chat",
     components: {
@@ -30,7 +30,6 @@ export default {
         {
             axios.get(route('chat.get-chats')).then((response) => {
                 this.chats = response.data;
-                console.log(this.chats);
             }).catch((error) => {
                 console.log('Error: ' + error);
             });
