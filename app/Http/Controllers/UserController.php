@@ -77,7 +77,7 @@ class UserController extends Controller
             'user' => User::where('username', $username)
             ->with('media')
             ->select('id', 'username')
-            ->first()
+            ->first(),
         ]);
     }
 
