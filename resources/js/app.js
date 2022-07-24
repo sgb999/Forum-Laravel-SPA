@@ -1,4 +1,6 @@
-require('./bootstrap');
+import {resolvePageComponent} from "laravel-vite-plugin/inertia-helpers";
+
+import('./bootstrap');
 
 import { createApp, h } from 'vue'
 import { createInertiaApp, Link, Head } from '@inertiajs/inertia-vue3'
@@ -18,7 +20,10 @@ const $ = x => {
     }
 };
 createInertiaApp({
-    resolve: name => require(`./components/pages/${name}`),
+    resolve: name => resolvePageComponent(
+        `/resources/js/components/pages/${name}.vue`,
+        import.meta.glob('/resources/js/components/pages/**/*.vue')
+    ),
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .mixin({methods: {route: window.route}})

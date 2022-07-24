@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/Footer";
+import NavigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/Footer.vue";
 export default {
     name: "categories",
     components: {
