@@ -30,7 +30,6 @@ export default {
     name: "pagination",
     props: {
         links: {
-            type: [],
             required: true
         }
     }

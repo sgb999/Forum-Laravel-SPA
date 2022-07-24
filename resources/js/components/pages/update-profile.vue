@@ -1,18 +1,15 @@
 <template>
     <navigation-bar />
+    <img class="banner" :src="banner ? banner : '/storage/default/banner.jpg'" alt="banner">
     <div class="container">
-        <img v-if="banner" class="banner" :src="banner" alt="banner">
-        <img v-if="!banner" class="banner" :src="'/storage/default/banner.jpg'" alt="banner">
-        <div class="container">
-            <div class="user">
-                <img class="avatar" v-if="avatar" :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
-                <h1 id="name-tag">{{ user.name }}</h1>
-                <h1 id="username-tag">{{ user.username }}</h1>
-                <h1 id="email-tag">{{ user.email }}</h1>
-            </div>
+        <div class="user">
+            <img class="avatar" :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
+            <h1 id="name-tag">{{ user.name }}</h1>
+            <h1 id="username-tag">{{ user.username }}</h1>
+            <h1 id="email-tag">{{ user.email }}</h1>
         </div>
+      <hr />
         <form @submit.prevent>
-            <hr />
             <div class="row">
                 <label for="name">Profile Banner</label>
                 <div class="col">
@@ -152,8 +149,8 @@
 
 <script>
 import {Inertia} from "@inertiajs/inertia";
-import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/footer";
+import NavigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/footer.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 
 import vueFilePond from "vue-filepond";
@@ -286,6 +283,7 @@ export default {
         },
       getUserData(){
         axios.get('/user/' + this.user.id).then(resp => {
+          console.log(resp.data);
           resp.data.media.forEach(el => {
             if(el.collection_name === 'banner'){
               this.banner = el.original_url;
@@ -377,44 +375,46 @@ export default {
     display: block
     margin: 20px auto 0
 .banner
-    position: absolute
-    height: 600px
-    width: 100%
-    top: 100px
-    bottom: 0
-    left: 0
-    right: 0
-    box-sizing: border-box
+  position: relative
+  border-radius: 10px
+  height: 600px
+  width: clamp(400px, 100%, 1296px)
+  display: block
+  margin: 0 auto
+  box-sizing: border-box
 .user
-    padding-top: 550px
-    position: absolute
-    display: grid
-    grid-template-columns: 20% 80%
-    grid-template-rows: 35px 30px 30px
-    .avatar
-        grid-column: 1/1
-        height: 150px
-        width: 150px
-        border-radius: 50%
-        border: solid 2px #FFFFFF
-        margin-right: 20px
-        color: rgb(228, 230, 235)
-    #name-tag
-        margin-left: 100px
-        margin-top: 25px
-        margin-bottom: 0
-        grid-column: 2/2
-        grid-row: 1
-    #username-tag
-        margin-left: 100px
-        grid-column: 2/2
-        grid-row: 2
-        margin-top: 20px
-    #email-tag
-        margin-left: 100px
-        grid-column: 2/2
-        grid-row: 3
-        margin-top: 25px
+  padding-top: 0
+  position: relative
+  bottom: 45px
+  display: grid
+  grid-template-columns: 10% 20% 70%
+  grid-template-rows: 35px 30px 30px
+.avatar
+    grid-column: 2/2
+    height: 150px
+    width: 150px
+    border-radius: 50%
+    border: solid 2px #FFFFFF
+    margin-right: 20px
+    color: rgb(228, 230, 235)
+#name-tag
+    margin-left: 100px
+    margin-top: 25px
+    margin-bottom: 0
+    grid-column: 3/3
+    grid-row: 1
+#username-tag
+    margin-left: 100px
+    grid-column: 3/3
+    grid-row: 2
+    margin-top: 20px
+#email-tag
+    margin-left: 100px
+    grid-column: 3/3
+    grid-row: 3
+    margin-top: 25px
 form
-    padding-top: 700px
+    margin: 10px auto auto
+    width: 60%
+    border-radius: 10px
 </style>

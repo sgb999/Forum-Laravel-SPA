@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import viewTopics from "./viewTopics";
-import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/footer";
-import Pagination from "../layout/pagination";
+import viewTopics from "./viewTopics.vue";
+import NavigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/footer.vue";
+import Pagination from "../layout/pagination.vue";
 export default {
     name: "LoadTitles",
     components:{
@@ -41,7 +41,6 @@ export default {
             this.topics.data = null;
             axios.get(site).then((response) => {
                     this.topics = response.data;
-                    console.log(this.topics.links);
                 }).catch((error) => {
                 console.log('Error: ' + error);
             });

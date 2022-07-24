@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import navigationBar from "../layout/NavigationBar";
-import Footer from "../layout/footer";
+import navigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/footer.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 export default {
     name: "updatePost",

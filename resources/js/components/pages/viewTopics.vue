@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import PageLoader from "./PageLoader";
+import PageLoader from "./PageLoader.vue";
 export default {
     name: "viewTopics",
     components:{
@@ -28,7 +28,7 @@ export default {
     },
     props:{
         topics: {
-            type: [],
+            type: Array,
             required: false
         }
     }

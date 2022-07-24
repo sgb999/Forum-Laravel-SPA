@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/Footer";
-import ViewTopics from "./viewTopics";
-import Pagination from "../layout/pagination";
+import NavigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/Footer.vue";
+import ViewTopics from "./viewTopics.vue";
+import Pagination from "../layout/pagination.vue";
 export default {
     name: "profile",
     props: {
@@ -73,18 +73,15 @@ export default {
 
 <style scoped lang="sass">
 .banner
-    position: absolute
-    height: 600px
-    width: 100%
-    top: 100px
-    bottom: 0
-    left: 0
-    right: 0
-    box-sizing: border-box
+  position: relative
+  border-radius: 10px
+  height: 600px
+  width: clamp(400px, 100%, 1296px)
+  display: block
+  margin: 0 auto
+  box-sizing: border-box
 .content
-    padding-top: 700px
     .empty-posts
-        height: 200px
         width: 80%
         background-color: #A9A9A9
         border-radius: 25px
@@ -94,22 +91,24 @@ export default {
             display: grid
             text-align: center
             padding-top: 90px
+            padding-bottom: 90px
 .user
-    padding-top: 550px
-    position: absolute
-    display: flex
-    flex: 1
-    .avatar
-        height: 150px
-        width: 150px
-        border-radius: 50%
-        border: solid 2px #FFFFFF
-        margin-right: 20px
-        color: rgb(228, 230, 235)
-    h1, .right
-        margin-top: 50px
-    .right
-        margin-left: 50vw
+  padding-top: 0
+  position: relative
+  bottom: 45px
+  display: flex
+  flex: 1
+  h1, .right
+    margin-top: 50px
+  .right
+    margin-left: 50vw
+    height: fit-content
+  .avatar
+    height: 150px
+    width: 150px
+    border-radius: 50%
+    border: solid 2px #FFFFFF
+    margin-right: 20px
 @media screen and (max-width: 600px)
     .banner
         height: 400px

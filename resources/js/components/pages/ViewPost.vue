@@ -23,9 +23,9 @@
 
 <script>
 import {useForm} from "@inertiajs/inertia-vue3";
-import NavigationBar from "../layout/NavigationBar";
-import Footer from "../layout/Footer";
-import Comment from "./Comment";
+import NavigationBar from "../layout/NavigationBar.vue";
+import Footer from "../layout/Footer.vue";
+import Comment from "./Comment.vue";
 export default {
     name: "ViewPost",
     props:{

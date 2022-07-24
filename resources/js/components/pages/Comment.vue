@@ -13,7 +13,6 @@
                 <form @submit.prevent class="edit-form">
                     <textarea
                           class="form-control" rows="4" minlength="4">{{ comment.comment }}</textarea>
-
                 </form>
                 <div class="buttons">
                     <button id="update" class="btn btn-primary" @click="updateComment(index, $event)">Update Comment</button>
@@ -41,9 +40,9 @@
 </template>
 
 <script>
-import pageLoader from "./PageLoader";
+import pageLoader from "./PageLoader.vue";
 import { useForm } from "@inertiajs/inertia-vue3"
-import Pagination from "../layout/pagination";
+import Pagination from "../layout/pagination.vue";
 import { usePage } from '@inertiajs/inertia-vue3'
 import { computed } from 'vue';
 export default {
