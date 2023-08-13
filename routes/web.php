@@ -31,8 +31,8 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/view-post/{id}', 'viewPost')->name('post.show');
 });
 Route::get('/comment/view/{id}', [CommentController::class, 'index'])->name('comment.index');
-Route::get('/profile/{username}', [UserController::class, 'profile'])->name('profile');
-Route::get('/profile/user-posts/{id}', [UserController::class, 'getUserPosts']);
+Route::get('user/profile/{username}', [UserController::class, 'profile'])->name('user.profile');
+//Route::get('/profile/user-posts/{id}', [UserController::class, 'getUserPosts']);
 
 Route::middleware(['auth'])->group(function () {
     Route::controller(CommentController::class)
@@ -44,10 +44,10 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(UserController::class)
         ->group(function () {
             Route::get('/log-out', 'logOutMethod')->name('log-out');
-            Route::get('/profile/update/{username}', 'updateProfilePage')->name('user.index');
+            Route::get('/profile/update/', 'updateProfilePage')->name('user.update-profile');
             Route::match(['post', 'put'], '/profile/update/{user}', 'updateProfile')->name('user.edit');
             Route::delete('/profile/update{user}', 'destroy')->name('user.destroy');
-            Route::get('/user/{user}', 'getUser');
+          //  Route::get('/user/{user:username}', 'index')->name('user.profile');
         });
 
     Route::inertia('/chats', 'chat')->name('chat.index');

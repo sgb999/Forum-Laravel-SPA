@@ -9,7 +9,7 @@
             <inertia-link :href="'/profile/' + post.user.username">
                 {{post.user.username}}
             </inertia-link>
-            <p>{{ post.created_at.split("T")[0] }}</p>
+            <p>{{ this.formatDate(post.created_at) }}</p>
         </div>
         <div v-if="post.user.id === $page.props.auth.user.id">
             <inertia-link :href="route('post.edit', post.id)" id="edit" class="btn btn-primary col-1 btn-style">Edit</inertia-link>
@@ -26,6 +26,7 @@ import {useForm} from "@inertiajs/inertia-vue3";
 import NavigationBar from "../layout/NavigationBar.vue";
 import Footer from "../layout/Footer.vue";
 import Comment from "./Comment.vue";
+import moment from "moment/moment";
 export default {
     name: "ViewPost",
     props:{
@@ -64,6 +65,10 @@ export default {
                   return false;
               }
           });
+      },
+      formatDate(value)
+      {
+        return moment(String(value)).format('DD/MM/YYYY H:MM a')
       }
     },
     mounted(){
