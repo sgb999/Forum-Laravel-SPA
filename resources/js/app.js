@@ -5,20 +5,12 @@ import('./bootstrap');
 import { createApp, h } from 'vue'
 import { createInertiaApp, Link, Head } from '@inertiajs/inertia-vue3'
 import { Ziggy } from './ziggy';
+//import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import moment from "moment/moment";
 
-const $ = x => {
-    if(x.startsWith('.')) {
-        document.getElementsByClassName(x);
-    }
-    else if(x.startsWith('#')) {
-        document.getElementById(x);
-    }
-    else {
-        document.getElementsByTagName(x);
-    }
-};
+
 createInertiaApp({
     resolve: name => resolvePageComponent(
         `/resources/js/components/pages/${name}.vue`,

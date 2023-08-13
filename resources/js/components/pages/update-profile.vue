@@ -1,7 +1,7 @@
 <template>
     <navigation-bar />
     <img class="banner" :src="banner ? banner : '/storage/default/banner.jpg'" alt="banner">
-    <div class="container">
+    <div id="update-profile-page" class="container">
         <div class="user">
             <img class="avatar" :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
             <h1 id="name-tag">{{ user.name }}</h1>

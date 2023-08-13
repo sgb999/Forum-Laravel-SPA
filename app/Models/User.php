@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+//use App\Http\Traits\DateTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,6 +20,7 @@ class User extends Authenticatable implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
     use Notifiable;
+  //  use DateTrait;
 
     protected $fillable = [
         'name',

@@ -2,12 +2,12 @@
     <Head title="Profile" />
     <navigation-bar />
     <img class="banner" :src="banner ? banner : '/storage/default/banner.jpg'" alt="banner">
-    <div class="container">
+    <div id="view-user-page" class="container" v-if="user !== null">
         <div class="user">
             <img class="avatar" :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
             <h1>{{ user.username }}</h1>
             <div class="right">
-                <inertia-link v-if="user.id === $page.props.auth.user.id" :href="route('user.index', user.username)" class="btn btn-primary">Edit Profile</inertia-link>
+                <inertia-link v-if="user.id === $page.props.auth.user.id" :href="route('user.update-profile', $page.props.auth.user.username)" class="btn btn-primary">Edit Profile</inertia-link>
                 <inertia-link v-if="user.id !== $page.props.auth.user.id && $page.props.auth.login" :href="route('chat.show', user.id)" class="btn btn-primary">Message</inertia-link>
             </div>
         </div>

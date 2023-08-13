@@ -10,18 +10,12 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\TemporaryFile;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Response;
 use Inertia\ResponseFactory;
-
-use function array_filter;
-use function array_key_exists;
-use function rmdir;
-use function uniqid;
 
 class UserController extends Controller
 {
@@ -77,25 +71,25 @@ class UserController extends Controller
             'user' => User::where('username', $username)
             ->with('media')
             ->select('id', 'username')
-            ->first(),
+            ->first()
         ]);
     }
 
-    public function getUser(int $id) : JsonResponse
+    /**public function index(string $username) : JsonResponse
     {
         return response()->json(
-            User::whereId($id)
+            User::where('username', $username)
                 ->with('media')
                 ->select('id')
                 ->first()
         );
-    }
+    }*/
 
-    public function updateProfilePage(string $username) : Response|ResponseFactory
+    public function updateProfilePage() : Response|ResponseFactory
     {
-        $user = User::where('username', $username)
+        $user = User::where('id', auth()->id())
             ->with('media')
-            ->select('id', 'name', 'username', 'email')
+            ->select(['id', 'name', 'username', 'email'])
             ->first();
         abort_unless($user->id === auth()->id(), 403);
         return inertia('update-profile', ['user' => $user]);
