@@ -14,6 +14,7 @@ class Post extends Model
 {
     use BelongsToUserTrait;
     use HasFactory;
+    //use DateTrait;
 
     //use DateTrait;
 

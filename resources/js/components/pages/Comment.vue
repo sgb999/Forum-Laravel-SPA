@@ -21,10 +21,10 @@
                     <button id="delete" class="btn btn-danger" @click="deleteComment(index)">Delete Comment</button>
                 </div>
             </div>
-            <inertia-link :href="route('profile', comment.user.username)">
+            <inertia-link :href="route('user.profile', comment.user.username)">
                 {{ comment.user.username }}
             </inertia-link>
-            <p>{{ comment.created_at }}</p>
+            <p>{{ this.formatDate(comment.created_at) }}</p>
         </div>
         <pagination v-if="comments.links" :links="comments.links" @nextPage="getComments($event)"></pagination>
 
@@ -45,6 +45,7 @@ import { useForm } from "@inertiajs/vue3"
 import Pagination from "../layout/pagination.vue";
 import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue';
+import moment from "moment";
 export default {
     name: "Comment",
     components:{
@@ -172,9 +173,13 @@ export default {
             buttons.childNodes[1].style.display = 'none'; // hide cancel button
             buttons.childNodes[2].style.display = 'block'; // show edit button
             event.target.parentNode.parentNode.parentNode.getElementsByTagName('p')[0].style.display = 'block'; // show updated text
-        }
+        },
+      formatDate(value)
+      {
+        return moment(String(value)).format('DD/MM/YYYY H:MM a')
+      }
     },
-    mounted() {
+      mounted() {
         this.getComments('/comment/view/' + this.id);
     }
 };

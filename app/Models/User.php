@@ -20,6 +20,7 @@ class User extends Authenticatable implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
     use Notifiable;
+  //  use DateTrait;
 
   //  use DateTrait;
 

@@ -17,11 +17,6 @@ use Illuminate\Support\Facades\Hash;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
-use function array_filter;
-use function array_key_exists;
-use function rmdir;
-use function uniqid;
-
 class UserController extends Controller
 {
     public function login(UserLoginRequest $request) : RedirectResponse
@@ -76,7 +71,7 @@ class UserController extends Controller
             'user' => User::where('username', $username)
             ->with('media')
             ->select('id', 'username')
-            ->first(),
+            ->first()
         ]);
     }
 

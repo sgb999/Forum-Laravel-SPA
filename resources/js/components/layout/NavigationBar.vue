@@ -5,7 +5,7 @@
         <li><inertia-link :href="route('categories.index')">View Categories</inertia-link></li>
         <li v-if="user" class="right"><inertia-link :href="route('log-out')"><span class="glyphicon glyphicon-log-out red"></span> Sign out</inertia-link></li>
         <li v-if="user" class="right"><inertia-link :href="route('chat.index')"><span class="glyphicon glyphicon-envelope yellow"></span>Messages</inertia-link></li>
-        <li v-if="user" class="right"><inertia-link :href="route('profile', username)">Profile</inertia-link></li>
+        <li v-if="user" class="right"><inertia-link :href="route('user.profile', username)">Profile</inertia-link></li>
         <li v-if="!user" class="right"><inertia-link :href="route('register.index')"><span class="glyphicon glyphicon-user green"></span>Sign Up</inertia-link></li>
         <li v-if="!user" class="right"><inertia-link :href="route('login.index')"><span class="glyphicon glyphicon-log-in green"></span>Login</inertia-link></li>
     </ul>

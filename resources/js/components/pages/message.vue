@@ -7,7 +7,7 @@
                 <hr>
                 <div v-bind:class="(message.user.id === $page.props.auth.user.id)?'user': 'not-user'" class="message">
                     <p>{{ message.message }}</p>
-                    <inertia-link :href="route('profile', message.user.username)">{{ message.user.username }}</inertia-link>
+                    <inertia-link :href="route('user.profile', message.user.username)">{{ message.user.username }}</inertia-link>
                 </div>
             </div>
         </div>

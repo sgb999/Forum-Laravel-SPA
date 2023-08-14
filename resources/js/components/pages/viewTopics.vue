@@ -8,19 +8,20 @@
             <inertia-link :href="route('post.show', topic.id)">
             <h3>{{topic.title}}</h3>
             </inertia-link>
-            <inertia-link :href="route('profile', topic.user.username)">
+            <inertia-link :href="route('user.profile', topic.user.username)">
                 <p>{{topic.user.username}}</p>
             </inertia-link>
             <inertia-link :href="route('topics.show', topic.category.id)">
                 <p>{{ topic.category.name }}</p>
             </inertia-link>
-            <p>{{ topic.created_at }}</p>
+            <p>{{ this.formatDate(topic.created_at) }}</p>
         </div>
     </div>
 </template>
 
 <script>
 import PageLoader from "./PageLoader.vue";
+import moment from "moment"
 export default {
     name: "viewTopics",
     components:{
@@ -31,7 +32,13 @@ export default {
             type: Array,
             required: false
         }
-    }
+    },
+  methods:{
+      formatDate(value)
+      {
+        return moment(String(value)).format('DD/MM/YYYY H:MM a')
+      }
+  }
 };
 </script>
 

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Chat extends Model
 {
     use HasFactory;
+    //use DateTrait;
 
     //use DateTrait;
 
