@@ -3,7 +3,7 @@ import {resolvePageComponent} from "laravel-vite-plugin/inertia-helpers";
 import('./bootstrap');
 
 import { createApp, h } from 'vue'
-import { createInertiaApp, Link, Head } from '@inertiajs/inertia-vue3'
+import { createInertiaApp, Link, Head } from '@inertiajs/vue3'
 import { Ziggy } from './ziggy';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';

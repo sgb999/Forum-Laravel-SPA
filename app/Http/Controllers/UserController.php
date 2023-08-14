@@ -10,7 +10,6 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\TemporaryFile;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,21 +80,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function getUser(int $id) : JsonResponse
+    /**public function index(string $username) : JsonResponse
     {
         return response()->json(
-            User::whereId($id)
+            User::where('username', $username)
                 ->with('media')
                 ->select('id')
                 ->first()
         );
-    }
+    }*/
 
-    public function updateProfilePage(string $username) : Response|ResponseFactory
+    /**
+     * @return Response|ResponseFactory
+     */
+    public function updateProfilePage() : Response|ResponseFactory
     {
-        $user = User::where('username', $username)
+        $user = User::where('id', auth()->id())
             ->with('media')
-            ->select('id', 'name', 'username', 'email')
+            ->select(['id', 'name', 'username', 'email'])
             ->first();
         abort_unless($user->id === auth()->id(), 403);
         return inertia('update-profile', ['user' => $user]);

@@ -13,7 +13,7 @@ class CategoryController extends Controller
     /**
      * @return  Response|ResponseFactory
      */
-    public function index()
+    public function index() : Response|ResponseFactory
     {
         return inertia('categories', ['categories' => Category::all()]);
     }
