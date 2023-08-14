@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import {useForm} from "@inertiajs/inertia-vue3";
+import {useForm} from "@inertiajs/vue3";
 import NavigationBar from "../layout/NavigationBar.vue";
 import Footer from "../layout/Footer.vue";
 export default {

@@ -14,6 +14,8 @@ class Message extends Model
     use HasFactory;
   //  use DateTrait;
 
+  //  use DateTrait;
+
     protected $fillable = [
         'chat_id',
         'message',

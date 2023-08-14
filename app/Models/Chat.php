@@ -14,6 +14,8 @@ class Chat extends Model
     use HasFactory;
     //use DateTrait;
 
+    //use DateTrait;
+
     protected $fillable = [
         'user_id_1',
         'user_id_2',

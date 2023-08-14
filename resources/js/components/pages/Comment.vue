@@ -41,9 +41,9 @@
 
 <script>
 import pageLoader from "./PageLoader.vue";
-import { useForm } from "@inertiajs/inertia-vue3"
+import { useForm } from "@inertiajs/vue3"
 import Pagination from "../layout/pagination.vue";
-import { usePage } from '@inertiajs/inertia-vue3'
+import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue';
 import moment from "moment";
 export default {
@@ -60,7 +60,7 @@ export default {
     data(){
         const form = useForm({
             comment : '',
-            _token : computed(() => usePage().props.value.csrf),
+            _token : computed(() => usePage().props.csrf),
             post_id : this.id
         });
       return {

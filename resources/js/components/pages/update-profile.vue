@@ -148,10 +148,8 @@
 </template>
 
 <script>
-import {Inertia} from "@inertiajs/inertia";
 import NavigationBar from "../layout/NavigationBar.vue";
 import Footer from "../layout/footer.vue";
-import { useForm } from "@inertiajs/inertia-vue3";
 
 import vueFilePond from "vue-filepond";
 

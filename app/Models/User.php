@@ -22,6 +22,8 @@ class User extends Authenticatable implements HasMedia
     use Notifiable;
   //  use DateTrait;
 
+  //  use DateTrait;
+
     protected $fillable = [
         'name',
         'username',

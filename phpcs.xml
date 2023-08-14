@@ -19,4 +19,5 @@
     <file>routes</file>    
     <!-- Include all rules from the Zend Coding Standard -->
     <rule ref="OpsWayStrictPSR12CodingStandard"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/>
 </ruleset>

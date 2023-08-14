@@ -85,6 +85,9 @@ class UserController extends Controller
         );
     }*/
 
+    /**
+     * @return Response|ResponseFactory
+     */
     public function updateProfilePage() : Response|ResponseFactory
     {
         $user = User::where('id', auth()->id())
