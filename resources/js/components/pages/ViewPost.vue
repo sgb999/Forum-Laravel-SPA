@@ -6,7 +6,7 @@
         <p>{{post.content}}</p>
         <div class="user">
             <img class="avatar"  :src="avatar ? avatar : '/storage/default/avatar.png'" alt="avatar">
-            <inertia-link :href="'/profile/' + post.user.username">
+            <inertia-link :href="route('user.profile', post.user.username)">
                 {{post.user.username}}
             </inertia-link>
             <p>{{ this.formatDate(post.created_at) }}</p>
