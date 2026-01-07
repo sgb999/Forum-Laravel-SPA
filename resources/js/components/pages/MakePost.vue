@@ -36,7 +36,7 @@
 <script>
 
 import NavigationBar from "../layout/NavigationBar.vue";
-import Footer from "../layout/footer.vue";
+import Footer from "../layout/Footer.vue";
 import { useForm } from "@inertiajs/vue3";
 export default {
     name: "MakePost",
