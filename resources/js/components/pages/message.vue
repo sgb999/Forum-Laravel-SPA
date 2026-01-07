@@ -13,7 +13,7 @@
         </div>
         <hr>
         <form @submit.prevent>
-            <label>Post a Comment</label>
+            <label>Send a Message</label>
             <div class="message">
                 <textarea v-model="form.message" class="form-control" rows="4" minlength="4"></textarea>
                 <button @click="sendMessage" type="submit" class="btn btn-primary">Submit</button>
