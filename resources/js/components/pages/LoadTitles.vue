@@ -15,7 +15,7 @@
 <script>
 import viewTopics from "./viewTopics.vue";
 import NavigationBar from "../layout/NavigationBar.vue";
-import Footer from "../layout/footer.vue";
+import Footer from "../layout/Footer.vue";
 import Pagination from "../layout/pagination.vue";
 export default {
     name: "LoadTitles",

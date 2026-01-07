@@ -149,7 +149,7 @@
 
 <script>
 import NavigationBar from "../layout/NavigationBar.vue";
-import Footer from "../layout/footer.vue";
+import Footer from "../layout/Footer.vue";
 
 import vueFilePond from "vue-filepond";
 
